@@ -1,0 +1,1031 @@
+classDiagram
+direction LR
+
+%% Data Transfer Objects (will appear on the left)
+%% USER
+class ReqRegisterDto {
+    email: String
+    password: String
+    username: String
+    firstName: String
+    lastName: String
+    gender: String 
+    dob: String
+}
+
+
+
+class ReqLoginDto {
+    email: String
+    password: String
+}
+class ReqChangePasswordDto {
+    oldPassword: String
+    newPassword: String
+}
+class ReqChangeUserInfo {
+    firstName: String
+    lastName: String
+    dob: String
+    gender: String
+}
+
+class ResSignInDto {
+    token: String
+}
+
+class ResMeDto {
+    id: String
+    email: String
+    username: String
+    firstName: String
+    lastName: String
+    gender: String
+    dob: String
+    role: String
+    createdAt: String
+    updatedAt: String
+}
+
+%% Force layout: reverse links so DTOs go left
+ReqRegisterDto ..> UserController : accept
+ReqLoginDto ..> UserController : accept
+ReqChangePasswordDto ..> UserController : accept
+ReqChangeUserInfo ..> UserController : accept
+ResSignInDto ..> UserController : return
+ResMeDto ..> UserController : return
+
+%% property status
+class ReqCreatePropertyStatusDto {
+    detail: String
+}
+class ReqUpdatePropertyStatusDto {
+    detail: String
+}
+class ResEntryPropertyStatusDto {
+    id: uuid
+    detail: String
+    createdBy: String
+    createdAt: DateTime
+    updatedAt: DateTime
+}
+class ResListEntryPropertyStatus {
+    total: int
+    description: String
+    data: List<ResEntryPropertyStatus>
+}
+ReqCreatePropertyStatusDto ..> PropertyStatusController: accept
+ReqUpdatePropertyStatusDto ..> PropertyStatusController: accept
+ResEntryPropertyStatusDto ..> PropertyStatusController: return
+ResListEntryPropertyStatusDto ..> PropertyStatusController: return
+
+%% contact type
+class ReqCreateContactTypeDto {
+    description: String
+}
+class ReqUpdateContactTypeDto {
+    description: String
+}
+class ResEntryContactTypeDto {
+    id: uuid
+    description: String
+    createdBy: String
+    createdAt: DateTime
+    updatedAt: DateTime
+}
+class ResListEntryContactTypeDto {
+    total: int
+    description: String
+    data: List<ResEntryContactTypeDto>
+}
+ReqCreateContactTypeDto ..> ContactTypeController: accept
+ReqUpdateContactTypeDto ..> ContactTypeController: accept
+ResEntryContactTypeDto ..> ContactTypeController: return
+ResListEntryContactTypeDto ..> ContactTypeController: return
+
+%% contact
+class ReqCreateContactDto {
+    businessName: String
+    internalName: String
+    detail: String
+    note: String
+    contactTypeId: uuid
+    address: String
+    phone: String
+    mobilePhone: String
+    line: String
+    email: String
+}
+
+class ReqUpdateContactDto {
+    businessName: String
+    internalName: String
+    detail: String
+    note: String
+    contactTypeId: uuid
+    address: String
+    phone: String
+    mobilePhone: String
+    line: String
+    email: String
+}
+
+class ResEntryContactDto {
+    id: uuid
+    businessName: String
+    internalName: String
+    detail: String
+    note: String
+    contactTypeId: uuid
+    address: String
+    phone: String
+    mobilePhone: String
+    line: String
+    email: String
+    createdAt: String
+    updatedAt: String
+}
+
+class ResListEntryContactDto {
+    total: int
+    description: String
+    data: List<ResEntryContactDto>
+}
+ReqCreateContactDto ..> ContactController  : accept
+ReqUpdateContactDto ..> ContactController : accept
+ResEntryContactDto ..> ContactController : return                                 
+ResListEntryContactDto ..> ContactController : return
+
+%% property type
+class ReqCreatePropertyTypeDto {
+    detail: String
+}
+class ReqUpdatePropertyTypeDto {
+    detail: String
+}
+class ResEntryPropertyTypeDto {
+    id: uuid
+    detail: String
+    createdAt: DateTime
+    updatedAt: DateTime
+}
+class ResListEntryPropertyTypeDto {
+    total: int
+    description: String
+    data: List<ResEntryPropertyTypeDto>
+}
+ReqCreatePropertyTypeDto ..> PropertyTypeController: accept
+ReqUpdatePropertyTypeDto ..> PropertyTypeController: accept
+ResEntryPropertyTypeDto ..> PropertyTypeController: return
+ResListEntryPropertyTypeDto ..> PropertyTypeController: return
+
+%% property
+class ReqCreatePropertyDto {
+    name: String
+    description: String
+    specific: String
+    hilight: String
+    area: String
+    price: double
+    f_s_f: double
+    status: uuid
+    ownerBy: uuid
+    map_url: String
+    lat: String
+    long: String
+}
+class ReqUpdatePropertyDto {
+    name: String
+    description: String
+    specific: String
+    hilight: String
+    area: String
+    price: double
+    f_s_f: double
+    status: uuid
+    ownerBy: uuid
+    map_url: String
+    lat: String
+    long: String
+}
+class ResEntryPropertyDto {
+    id: uuid
+    name: String
+    description: String
+    specific: String
+    hilight: String
+    area: String
+    price: double
+    f_s_f: double
+    status: uuid
+    ownerBy: uuid
+    map_url: String
+    lat: String
+    long: String
+    createdAt: DateTime
+    updatedAt: DateTime
+}
+class ResListEntryPropertyDto {
+    total: int
+    description: String
+    data: List<ResEntryPropertyDto>
+}
+ReqCreatePropertyDto ..> PropertyController : accept
+ReqUpdatePropertyDto ..> PropertyController : accept
+ResEntryPropertyDto ..> PropertyController : return
+ResListEntryPropertyDto ..> PropertyController : return
+
+%% expense type
+class ReqCreateExpenseTypeDto {
+    detail: String
+}
+class ReqUpdateExpenseTypeDto {
+    detail: String
+}
+class ResEntryExpenseTypeDto {
+    id: uuid
+    detail: String
+    createdAt: DateTime
+    updatedAt: DateTime
+}
+class ResListEntryExpenseTypeDto {
+    total: int
+    description: String
+    data: List<ResEntryExpenseTypeDto>
+}
+ReqCreateExpenseTypeDto ..> ExpenseTypeController: accept
+ReqUpdateExpenseTypeDto ..> ExpenseTypeController: accept
+ResEntryExpenseTypeDto ..> ExpenseTypeController: return
+ResListEntryExpenseTypeDto ..> ExpenseTypeController: return
+
+
+%% expense
+class ReqCreateExpenseDto {
+    detail: String
+    expenseType: uuid
+}
+class ReqUpdateExpenseDto {
+    detail: String
+    expenseType: uuid
+}
+class ResEntryExpenseDto {
+    id: uuid
+    detail: String
+    expenseType: String
+    createdAt: DateTime
+    updatedAt: DateTime
+}
+class ResListEntryExpenseDto {
+    total: int
+    description: String
+    data: List<ResEntryExpenseDto>
+}
+ReqCreateExpenseDto ..> ExpenseController: accept
+ReqUpdateExpenseDto ..> ExpenseController: accept
+ResEntryExpenseDto ..> ExpenseController: return
+ResListEntryExpenseDto ..> ExpenseController: return
+
+%% memo type
+class ReqCreateMemoTypeDto {
+    detail: String
+}
+class ReqUpdateMemoTypeDto {
+    detail: String
+}
+class ResEntryMemoTypeDto {
+    id: uuid
+    detail: String
+    createdAt: DateTime
+    updatedAt: DateTime
+}
+class ResListEntryMemoTypeDto {
+    total: int
+    description: String
+    date : List<ResEntryMemoTypeDto>
+}
+ReqCreateMemoTypeDto ..> MemoTypeController: accept
+ReqUpdateMemoTypeDto ..> MemoTypeController: accept
+ResEntryMemoTypeDto ..> MemoTypeController: return
+ResListEntryMemoTypeDto ..> MemoTypeController: return
+%% memo
+class ReqCreateMemoDto {
+    name: String
+    memoType: uuid
+    detail: String
+}
+class ReqUpdateMemoDto {
+    name: String
+    memoType: uuid
+    detail: String
+}
+class ResEntryMemoDto {
+    id: uuid
+    name: String
+    memoType: String
+    detail: String
+    createdAt: DateTime
+    updatedAt: DateTime
+}
+class ResListEntryMemoDto {
+    total: int
+    description: String
+    data: List<ResEntryMemoDto>
+}
+ReqCreateMemoDto ..> MemoController: accept
+ReqUpdateMemoDto ..> MemoController: accept
+ResEntryMemoDto ..> MemoController: return
+ResListEntryMemoDto ..> MemoController: return
+
+%% sale property
+class ReqCreateSaleTransactionDto {
+    propertyId: uuid
+    contactId: uuid
+    note: String
+    amount: double
+}
+class ReqUpdateSaleTransactionDto {
+    propertyId: uuid
+    contactId: uuid
+    note: String
+    amount: double
+}
+class ResEntrySaleTransactionDto {
+    id: uuid
+    transactionId: uuid
+    propertyName: String | uuid
+    contactName: String | uuid
+    note: String
+    amount: double
+    createdAt: DateTime
+    updatedAt: DateTime
+}
+class ResListEntrySaleTransactionDto {
+    total: int
+    description: String
+    data: List<ResEntrySaleTransactionDto>
+}
+
+
+%% file user
+class FileUserTransactionDto {
+    id: uuid
+    objectId: String
+    userId: uuid
+    fileType: FileType
+}
+
+
+%% invest
+class ReqCreateInvestTransactionDto {
+    note: String
+    item: List<ReqCreateInvestTransactionItemDto>
+}
+
+class ReqCreateInvestTransactionItemDto {
+    propertyId: uuid
+    contactId: uuid
+    amount: double
+    fundingPercent: double
+}
+
+class ReqUpdateInvestTransactionDto {
+    id: uuid
+    note: String
+    item: List<ReqUpdateInvestTransactionItemDto>
+}
+class ReqUpdateInvestTransactionItemDto {
+    id: uuid
+    propertyId: uuid
+    contactId: uuid
+    amount: double
+    fundingPercent: double
+}
+
+class ResEntryInvestTransactionDto {
+    id: uuid
+    note: String
+    item: List<ResEntryInvestTransactionItemDto>
+    createdAt: DateTime
+    updatedAt: DateTime
+}
+class ResEntryInvestTransactionItemDto {
+    id: uuid
+    investTransactionId: uuid
+    propertyName: String | uuid
+    contactName: String | uuid
+    amount: double
+    fundingPercent: double
+    createdAt: DateTime
+    updatedAt: DateTime
+}
+
+class ResListEntryInvestTransactionDto {
+    total: int
+    description: String
+    data: List<ResEntryInvestTransactionDto>
+}
+
+class ResListEntryInvestTransactionItemDto {
+    total: int
+    description: String
+    data: List<ResEntryInvestTransactionItemDto>
+}
+
+%% expense 
+class ReqCreateExpenseTransactionDto {
+    note: String
+    item: List<ReqCreateExpenseTransactionItemDto>
+}
+class ReqCreateExpenseTransactionItemDto{
+    expenseId: uuid
+    amount: double
+}
+class ReqUpdateExpenseTransactionDto {
+    id: uuid
+    note: String
+    item: List<ReqUpdateExpenseTransactionItemDto>
+}
+class ReqUpdateExpenseTransactionItemDto {
+    expenseId: uuid
+    amount: double
+}
+class ResEntryExpenseTransactionDto {
+    id: uuid
+    note: String
+    item: List<ResEntryExpenseTransactionItemDto>
+    createdAt: DateTime
+    updatedAt: DateTime
+}
+class ResEntryExpenseTransactionItemDto {
+    id: uuid
+    expenseTransactionId: uuid
+    expenseName: String | uuid
+    amount: double
+    createdAt: DateTime
+    updatedAt: DateTime
+}
+
+
+
+%% static table
+class Gender{
+    <<Enumeration>>
+    MALE
+    FEMALE
+    OTHER
+}
+
+class TransactionType {
+    <<Enumeration>>
+    INVEST
+    PAYMENT
+    SALE
+}
+
+class FileType {
+    <<Enumeration>>
+    PICTURE
+    FILE
+    OTHER
+}
+
+class CustomErrorResponse {
+    - statusCode: String
+    - Describtion: String
+    - ErrorMessage: String
+}
+
+
+%% Controller
+class UserController {
+    ~userService: UserService
+    +register(dto: ReqRegisterDto):Result String, Error
+    +login(dto: ReqLoginDto): Result ResSignInDto, Error
+    +changePassword(dto: ReqChangePasswordDto): Result String, Error
+    +changeUserInfo(dto: ReqChangeUserInfo): Result String, Error
+    +me(dto: ResSignInDto): Result ResMeDto, Error
+}
+UserController <--> UserService
+
+class PropertyStatusController {
+    ~propertyStatusService: PropertyStatusService
+    + newPropertyStatus(dto: ReqCreatePropertyStatusDto): Result ResEntryPropertyStatusDto, CustomErrorResponse
+    + editPropertyStatus(dto: ReqUpdatePropertyStatusDto): Result ResEntryPropertyStatusDto, CustomErrorResponse
+    + viewPropertyStatus(property_status_id: uuid): Result Optional[ResEntryPropertyStatusDto], CustomErrorResponse
+    + viewAllPropertyStatus(): Result ResListEntryPropertyStatusDto, CustomErrorResponse
+    + removePropertyStatus(property_status_id: uuid): Result void, CustomErrorResponse
+}
+PropertyStatusController <--> PropertyStatusService
+
+class ContactTypeController {
+    ~contactTypeService: ContactTypeService
+    + newContactType(dto: ReqCreateContactTypeDto): Result ResEntryContactTypeDto, CustomErrorResponse
+    + editContactType(dto: ReqUpdateContactTypeDto): Result ResEntryContactTypeDto, CustomErrorResponse
+    + viewContactType(): Result Optional[ResEntryContactTypeDto], CustomErrorResponse
+    + viewAllContactType(): Result ResListEntryContactTypeDto, CustomErrorResponse
+    + removeContactType(contact_type_id: uuid): Result void, CustomErrorResponse
+}
+ContactTypeController <--> ContactTypeService
+
+class ContactController {
+    ~contactService: ContactService
+    + newContact(dto: ReqCreateContactDto): Result ResEntryContactDto, CustomErrorResponse
+    + editContact(dto: ReqUpdateContactDto): Result ResEntryContactDto, CustomErrorResponse
+    + viewContact(contact_id: uuid): Result Optional[ResEntryContactDto], CustomErrorResponse
+    + viewAllContact(): Result ResListEntryContactDto, CustomErrorResponse
+    + removeContact(contact_id: uuid): Result void, CustomErrorResponse
+}
+ContactController <--> ContactService
+
+class PropertyTypeController {
+    ~propertyTypeService: PropertyTypeService
+    + newPropertyType(dto: ReqCreatePropertyTypeDto): Result ResEntryPropertyTypeDto, CustomErrorResponse
+    + editProertyType(dto: RequpdatePropertyTypeDto): Result ResEntryPropertyTypeDto, CustomErrorResponse
+    + viewPropertyType(property_type_id: uuid): Result Optional[ResEntryPropertyTypeDto], CustomErrorResponse
+    + viewAllPropertyType(): Result ResListEntryPropertyTypeDto, CustomErrorResponse
+    + removeContact(property_type_id: uuid): Result void, CustomErrorResponse
+}
+PropertyTypeController <--> PropertyTypeService
+
+class PropertyController {
+    ~ propertyService: PropertyService
+    + newProperty(dto: ReqCreatePropertyDto): Result ResEntryPropertyDto, CustomErrorResponse
+    + editProperty(dto: ReqUpdatePropertyDto): Result ResEntryPropertyDto, CustomErrorResponse
+    + viewProperty(property_id: uuid): Result Optional[ResEntryPropertyDto], CustomErrorResponse
+    + viewAllProperty(): Result ResListEntryPropertyDto, CustomErrorResponse
+    + removeProperty(property_id: uuid): Result void, CustomErrorResponse
+    + assignPropertyTypeToProperty(propertyType_id: uuid, property_id: uuid): Result void, CustomErrorResponse
+    + removePropertyTypeFromProperty(property_type_id: uuid, property_id: uuid): Result void, CustomErrorResponse
+    + viewAllPropertyTypeRelatedByPropertyId(property_id: uuid): Result ResListEntryPropertyTypeDto, CustomErrorResponse
+    + removeAllPropertyTypeRelatedByPropertyId(property_id: uuid): Result void, CustomErrorResponse
+}
+PropertyController <--> PropertyService
+
+class ExpenseTypeController {
+    ~expenseTypeService : ExpenseTypeService
+    + newExpenseType(dto: ReqCreateExpenseTypeDto): Result ResEntryExpenseTypeDto, CustomErrorResponse
+    + editExpenseType(dto: ReqUpdateExpenseTypeDto): Result ResEntryExpenseTypeDto, CustomErrorResponse
+    + viewExpenseType(expense_type_id: uuid): Result Optional[ResEntryExpenseTypeDto], CustomErrorResponse
+    + viewAllExpenseType(): Result ResListEntryExpenstTypeDto, CustomErrorResponse
+    + removeExpenseType(expense_type_id: uuid): Result void, CustomErrorResponse
+}
+ExpenseTypeController <--> ExpenseTypeService
+
+class ExpenseController {
+    ~ expenseService: ExpenseService
+    + newExpense(dto: ReqCreateExpenseDto): Result ResEntryExpenseDto, CustomErrorResponse
+    + editExpense(dto: ReqUpdateExpenseDto): Result ResEntryExpenseDto, CustomErrorResponse
+    + viewExpense(expense_id: uuid): Result Optional[ResEntryExpense], CustomErrorResponse
+    + viewAllExpense(): Result ResListEntryExpenseDto, CustomErrorResponse
+    + removeExpense(expense_id: uuid): Result void, CustomErrorResponse
+}
+ExpenseController <--> ExpenseService
+
+class MemoTypeController {
+    ~ memoTypeService: MemoTypeService
+    + newMemoType(dto: ReqCreateMemoTypeDto): Result ResEntryMemoTypeDto, CustomErrorResponse
+    + editMemoType(dto: ReqUpdateMemoTypeDto): Result ResEntryMemoTypeDto, CustomErrorResponse
+    + viewMemoType(memo_type_id: uuid): Result Optional[ResEntryMemoTypeDto], CustomErrorResponse
+    + viewAllMemoType(): Result ResListEntryMemoTypeDto, CustomErrorResponse
+    + removeMemoType(memo_type_dto: uuid): Result void, CustomErrorResponse
+}
+MemoTypeController <--> MemoTypeService
+
+class MemoController {
+    ~ memoService: MemoService
+    + newMemo(dto: ReqCreateMemo): Result ResEntryMemoDto, CustomErrorResponse
+    + editMemo(memo_id: uuid ,dto: ReqUpdateMemo): Result ResEntryMemoDto, CustomErrorResponse
+    + viewMemo(memo_id: uuid): Result Optional[ResEntryMemoDto], CustomErrorResponse
+    + viewAllMemo(): Result ResListEntryMemoDto, CustomErrorResponse
+    + removeMemo(memo_id: uuid): Result void, CustomErrorResponse
+}
+MemoController <--> MemoService
+
+class SalePropertyOpsController {
+    ~ salePropertyOpsService: SalePropertyOpsService
+    + newSaleRecord(dto: ReqCreateSaleTransactionDto): Result ResEntrySaleTransactionDto, CustomErrorResponse
+    + editSaleRecord(dto: ReqUpdateSaleTransactionDto): Result ResEntrySaleTransactionDto, CustomErrorResponse
+    + viewSaleRecord(sale_transaction_id: uuid): Result Optional[ResEntrySaleTransactionDto], CustomErrorResponse
+    + viewAllSaleRecord(): Result List[ResEntrySaleTransactionDto], CustomErrorResponse
+    + removeSaleRecord(sale_transaction_id: uuid): Result void, CustomErrorResponse
+}
+SalePropertyOpsController <--> SalePropertyOpsService
+ReqCreateSaleTransactionDto ..> SalePropertyOpsController: accept
+ReqUpdateSaleTransactionDto ..> SalePropertyOpsController: accept
+ResEntrySaleTransactionDto ..> SalePropertyOpsController: return
+ResListEntrySaleTransactionDto ..> SalePropertyOpsController: return
+
+
+class InvestOpsController {
+    ~ investOpsService: InvestOpsService
+    + newInvestRecord(dto: ReqCreateInvestTransactionDto): Result ResEntryInvestTransactionDto, CustomErrorResponse
+    + editInvestRecord(dto: ReqUpdateInvestTransactionDto): Result ResEntryInvestTransactionDto, CustomErrorResponse
+    + viewInvestRecord(invest_transaction_id: uuid): Result Optional[ResEntryInvestTransactionDto], CustomErrorResponse
+    + viewAllInvestRecord(): Result ResListEntryInvestTransactionDto, CustomErrorResponse
+    + removeInvestRecord(invest_transaction_id: uuid): Result void, CustomErrorResponse
+}
+InvestOpsController <--> InvestOpsService
+ReqCreateInvestTransactionDto ..> InvestOpsController: accept
+ReqUpdateInvestTransactionDto ..> InvestOpsController: accept
+ResEntryInvestTransactionDto ..> InvestOpsController: return
+ResListEntryInvestTransactionDto ..> InvestOpsController: return
+
+
+class ExpenseOpsController {
+    ~ expenseOpsService: ExpenseOpsService
+    + newExpenseRecord(dto: ReqCreateExpenseTransactionDto): Result ResEntryExpenseTransactionDto, CustomErrorResponse
+    + editExpenseRecord(dto: ReqUpdateExpenseTransactionDto): Result ResEntryExpenseTransactionDto, CustomErrorResponse
+    + viewExpenseRecord(expense_transaction_id: uuid): Result Optional[ResEntryExpenseTransactionDto], CustomErrorResponse
+    + viewAllExpenseRecord(): Result ResListEntryExpenseTransactionDto, CustomErrorResponse
+    + removeExpenseRecord(expense_transaction_id: uuid): Result void, CustomErrorResponse
+}
+ExpenseOpsController <--> ExpenseOpsService
+ReqCreateExpenseTransactionDto ..> ExpenseOpsController: accept
+ReqUpdateExpenseTransactionDto ..> ExpenseOpsController: accept
+ResEntryExpenseTransactionDto ..> ExpenseOpsController: return
+ResListEntryExpenseTransactionDto ..> ExpenseOpsController: return
+
+
+
+%% Service layer (will appear to the right)
+
+class UserService {
+    ~userRepository: UserRepository
+    +register(dto: ReqRegisterDto): Result void, ServiceError
+    +signIn(dto: ReqLoginDto): Result ResSignInDto, ServiceError
+    +changePassword(dto: ReqChangePasswordDto): Result void, ServiceError
+    +changeUserInfo(dto: ReqChangeUserInfo): Result void, ServiceError
+}
+UserService <--> UserRepository
+
+class PropertyStatusService {
+    ~ propertyTypeRepository: PropertyTypeRepository
+    + newPropertyStatus(user_id: uuid,dto: ReqCreatePropertyStatusDto): Result ResEntryProjectStatusDto, ServiceError
+    + editPropertyStatus(user_id: uuid, dto: ReqUpdatePropertyStatusDto): Result ResEntryProjectStatusDto, ServiceError
+    + viewPropertyStatus(user_id: uuid, property_status_id: uuid): Result Optional[ResEntryPropertyStatusDto], ServiceError
+    + viewAllPropertyStatus(user_id: uuid): Result ResListEntryPropertyStatusDto, ServiceError
+    + removePropertyStatus(user_id: uuid, property_status_id: uuid): Result void, ServiceError
+}
+PropertyStatusService <--> PropertyStatusRepository
+
+class ContactTypeService {
+    ~ contactTypeRepository: ContactTypeRepository
+    + newContactType(user_id: uuid, dto: ReqCreateContactTypeDto): Result ResEntryContactTypeDto, ServiceError
+    + editContactType(user_id: uuid, dto: ReqUpdateContactTypeDto): Result ResEntryContactTypeDto, ServiceError
+    + viewContactType(user_id: uuid, contact_type_id: uuid): Result Optional[ResEntryContactTypeDto], ServiceError
+    + viewAllContactType(user_id: uuid): Result ResListEntryContactTypeDto, ServiceError
+    + removeContactType(user_id: uuid, contact_type_id: uuid): Result void, ServiceError
+}
+ContactTypeService <--> ContactTypeRepository
+
+class ContactService {
+    ~ contactRepository: ContactRepository
+    ~ contactTypeRepository: ContactTypeRepository
+    + newContact(user_id: uuid, dto: ReqCreateContactDto): Result ResEntryContactDto, ServiceError
+    + editContact(user_id: uuid, dto: ReqUpdateContactDto): Result ResEntryContactDto, ServiceError
+    + viewContact(user_id: uuid, contact_id: uuid): Result Optional[ResEntryContactDto], ServiceError
+    + viewAllContact(user_id: uuid): Result ResListEntryContactDto, ServiceError
+    + removeContact(user_id: uuid, contact_id: uuid): Result void, ServiceError
+}
+ContactService <--> ContactRepository
+ContactService <--> ContactTypeRepository
+
+class PropertyTypeService {
+    ~ propertyTypeRepository : PropertyTypeRepository
+    + newPropertyType(user_id: uuid, dto: ReqCreatePropertyTypeDto): Result ResEntryPropertyTypeDto, ServiceError
+    + editProertyType(user_id: uuid, dto: RequpdatePropertyTypeDto): Result ResEntryPropertyTypeDto, ServiceError
+    + viewPropertyType(user_id: uuid, property_type_id: uuid): Result Optional[ResEntryPropertyTypeDto], ServiceError
+    + viewAllPropertyType(user_id: uuid): Result ResListEntryPropertyTypeDto, ServiceError
+    + removeContact(user_id: uuid, property_type_id: uuid): Result void, ServiceError
+}
+PropertyTypeService <--> PropertyTypeRepository
+
+class PropertyService {
+    ~ propertyRepository: PropertyRepository
+    ~ propertyOpsPropertyTypeRepository: PropertyOpsPropertyTypeRepository
+    ~ propertyTypeRepository: PropertyTypeRepository
+    + newProperty(user_id: uuid, dto: ReqCreatePropertyDto): Result ResEntryPropertyDto, ServiceError
+    + editProperty(user_id: uuid, dto: ReqUpdatePropertyDto): Result ResEntryPropertyDto, ServiceError
+    + viewProperty(user_id: uuid, property_id: uuid): Result Optional[ResEntryPropertyDto], ServiceError
+    + viewAllProperty(user_id: uuid): Result ResListEntryPropertyDto, ServiceError
+    + removeProperty(user_id: uuid, property_id: uuid): Result void, ServiceError
+    + assignPropertyTypeToProperty(user_id: uuid, propertyType_id: uuid, property_id: uuid): Result void, ServiceError
+    + removePropertyTypeFromProperty(user_id: uuid, property_type_id: uuid, property_id: uuid): Result void, ServiceError
+    + viewAllPropertyTypeRelatedByPropertyId(user_id: uuid, property_id: uuid): Result ResListEntryPropertyTypeDto, ServiceError
+    + removeAllPropertyTypeRelatedByPropertyId(user_id: uuid, property_id: uuid): Result void, ServiceError
+
+}
+PropertyService <--> PropertyRepository
+PropertyService <--> PropertyOpsPropertyTypeRepository
+PropertyService <--> PropertyTypeRepository
+
+class ExpenseTypeService {
+    ~ expenseTypeRepository: ExpenseTypeRepository
+    + newExpenseType(user_id: uuid, dto: ReqCreateExpenseTypeDto): Result ResEntryExpenseTypeDto, ServiceError
+    + editExpenseType(user_id: uuid, dto: ReqUpdateExpenseTypeDto): Result ResEntryExpenseTypeDto, ServiceError
+    + viewExpenseType(user_id: uuid, expense_type_id: uuid): Result Optional[ResEntryExpenseTypeDto], ServiceError
+    + viewAllExpenseType(user_id: uuid): Result ResListEntryExpenstTypeDto, ServiceError
+    + removeExpenseType(user_id: uuid, expense_type_id: uuid): Result void, ServiceError
+}
+ExpenseTypeService <--> ExpenseTypeRepository
+
+class ExpenseService {
+    ~ expenseRepository: ExpenseRepository
+    ~ expenseTypeRepository: ExpenseTypeRepository
+    + newExpense(user_id: uuid, dto: ReqCreateExpenseDto): Result ResEntryExpenseDto, ServiceError
+    + editExpense(user_id: uuid, dto: ReqUpdateExpenseDto): Result ResEntryExpenseDto, ServiceError
+    + viewExpense(user_id: uuid, expense_id: uuid): Result Optional[ResEntryExpense], ServiceError
+    + viewAllExpense(user_id: uuid): Result ResListEntryExpenseDto, ServiceError
+    + removeExpense(user_id: uuid, expense_id: uuid): Result void, ServiceError
+}
+ExpenseService <--> ExpenseRepository
+ExpenseService <--> ExpenseTypeRepository
+
+class MemoTypeService {
+    ~ memoTypeRepository: MemoTypeRepository
+    + newMemoType(user_id: uuid, dto: ReqCreateMemoTypeDto): Result ResEntryMemoTypeDto, ServiceError
+    + editMemoType(user_id: uuid, memo_type_id, uuid, dto: ReqUpdateMemoTypeDto): Result ResEntryMemoTypeDto, ServiceError
+    + viewMemoType(user_id: uuid, memo_type_id: uuid): Result Optional[ResEntryMemoTypeDto], ServiceError
+    + viewAllMemoType(user_id: uuid): Result ResListEntryMemoTypeDto, ServiceError
+    + removeMemoType(user_id: uuid, memo_type_dto: uuid): Result void, ServiceError
+}
+MemoTypeService <--> MemoTypeRepository
+
+class MemoService {
+    ~ memoRepository: MemoRepository
+    ~ memoTypeRepository: MemoTypeRepository
+    ~ cloudFlareR2Repository : CloudFlareR2Repository
+    + newMemo(user_id: uuid, dto: ReqCreateMemo): Result ResEntryMemoDto, ServiceError
+    + editMemo(user_id: uuid, memo_id: uuid ,dto: ReqUpdateMemo): Result ResEntryMemoDto, ServiceError
+    + viewMemo(user_id: uuid, memo_id: uuid): Result Optional[ResEntryMemoDto], ServiceError
+    + viewAllMemo(user_id: uuid): Result ResListEntryMemoDto, ServiceError
+    + removeMemo(user_id: uuid, memo_id: uuid): Result void, ServiceError
+}
+MemoService <--> MemoRepository
+MemoService <--> MemoTypeRepository
+MemoService <--> CloudFlareR2Repository
+MemoService <--> MemoFileService
+
+class MemoFileService{
+    ~ fileUserTransactionRepository: FileUserTransactionRepository
+    ~ memoFileRepository: FileMemoRepository
+    + assignFileToMemo(memo_id: uuid, file_user_id: uuid, user_id: uuid): Result boolean RepositoryError
+    + removeFileFromMemo(mome_id: uuid, file_user_id: uuid, user_id: uuid): Result boolean RepositoryError
+    
+    + viewAllFileRelatedByMemoId(memo_id: uuid, user_id: uuid): Result List[FileUserTransactionDto], ServiceError
+    + removeAllFileRelatedByMemoId(memo_id: uuid, user_id: uuid): Result boolean, ServiceError
+
+    + viewAllPictureRelatedByMemoId(memo_id: uuid): Result List[FileUserTransactionDto], ServiceError
+    + removeAllPictureRelatedByMemoId(memo_id: uuid): Result boolean, ServiceError
+
+    + viewAllDocumentRelatedByMemoId(memo_id: uuid): Result List[FileUserTransactionDto], ServiceError
+    + removeAllDocumentRelatedByMemoId(memo_id: uuid): Result boolean, ServiceError
+}
+MemoFileService <--> FileUserTransactionRepository
+MemoFileService <--> MemoFileRepository
+
+class SalePropertyOpsService {
+    ~ fileUserTransactionRepository: FileUserTransactionRepository
+    ~ transactionRepository: TransactionRepository
+    ~ saleTransactionRepository: SaleTransactionRepository
+    ~ saleFileTransactionRepository: SaleFileTransactionRepository
+    ~ transactionTypeRepository: TransactionTypeRepository
+    ~ cloudFlareR2Repository: CloudFlareR2Repository
+    + newSaleRecord(user_id: uuid, dto: ReqCreateSaleTransactionDto): Result ResEntrySaleTransactionDto, ServiceError
+    + editSaleRecord(user_id: uuid, dto: ReqUpdateSaleTransactionDto): Result ResEntrySaleTransactionDto, ServiceError
+    + viewSaleRecord(user_id: uuid, sale_transaction_id: uuid): Result Optional[ResEntrySaleTransactionDto], ServiceError
+    + viewAllSaleRecord(user_id: uuid): Result List[ResEntrySaleTransactionDto], ServiceError
+    + removeSaleRecord(user_id: uuid, sale_transaction_id: uuid): Result void, ServiceError
+}
+SalePropertyOpsService <--> TransactionRepository
+SalePropertyOpsService <--> SaleTransactionRepository
+SalePropertyOpsService <--> SaleFileTransactionRepository
+SalePropertyOpsService <--> TransactionTypeRepository
+SalePropertyOpsService <--> CloudFlareR2Repository
+SalePropertyOpsService <--> FileUserTransactionRepository
+
+class InvestOpsService {
+    ~ transactionRepository: TransactionRepository
+    ~ transactionTypeRepository: TransactionTypeRepository
+    ~ cloudFlareR2Repository: CloudFlareR2Repository
+    ~ investTransactionRepository : InvestTransactionRepository
+    ~ investTransactionRepository : InvestTransactionItemRepository
+    ~ fileUserTransactionRepository: FileUserTransactionRepository
+    + newInvestRecord(user_id: uuid, dto: ReqCreateInvestTransactionDto): Result ResEntryInvestTransactionDto, ServiceError
+    + editInvestRecord(user_id: uuid, dto: ReqUpdateInvestTransactionDto): Result ResEntryInvestTransactionDto, ServiceError
+    + viewInvestRecord(user_id: uuid, invest_transaction_id: uuid): Result Optional[ResEntryInvestTransactionDto], ServiceError
+    + viewAllInvestRecord(user_id: uuid): Result ResListEntryInvestTransactionDto, ServiceError
+    + removeInvestRecord(user_id: uuid, invest_transaction_id: uuid): Result void, ServiceError
+}
+InvestOpsService <--> TransactionRepository
+InvestOpsService <--> TransactionTypeRepository
+InvestOpsService <--> CloudFlareR2Repository
+InvestOpsService <--> InvestTransactionRepository
+InvestOpsService <--> InvestTransactionItemRepository
+InvestOpsService <--> FileUserTransactionRepository
+
+class ExpenseOpsService {
+    ~ transactionRepository: TransactionRepository
+    ~ transactionTypeRepository: TransactionTypeRepository
+    ~ cloudFlareR2Repository: CloudFlareR2Repository
+    ~ expenseTransactionRepository: ExpenseTransactionRepository
+    ~ expenseTransactionItemRepository: ExpenseTransactionItemRepository
+    ~ fileUserTransactionRepository: FileUserTransactionRepository
+    + newExpenseRecord(user_id: uuid, dto: ReqCreateExpenseTransactionDto): Result ResEntryExpenseTransactionDto, ServiceError
+    + editExpenseRecord(user_id: uuid, dto: ReqUpdateExpenseTransactionDto): Result ResEntryExpenseTransactionDto, ServiceError
+    + viewExpenseRecord(user_id: uuid, expense_transaction_id: uuid): Result Optional[ResEntryExpenseTransactionDto], ServiceError
+    + viewAllExpenseRecord(user_id: uuid): Result ResListEntryExpenseTransactionDto, ServiceError
+    + removeExpenseRecord(user_id: uuid, expense_transaction_id: uuid): Result void, ServiceError
+}
+ExpenseOpsService <--> TransactionRepository
+ExpenseOpsService <--> TransactionTypeRepository
+ExpenseOpsService <--> CloudFlareR2Repository
+ExpenseOpsService <--> ExpenseTransactionRepository
+ExpenseOpsService <--> ExpenseTransactionItemRepository
+ExpenseOpsService <--> FileUserTransactionRepository
+
+
+
+
+%% Repository layer
+class UserRepository {
+    ~
+}
+class PropertyStatusRepository {
+    ~
+}
+class ContactTypeRepository {
+    ~
+}
+
+class ContactRepository {
+    ~
+}
+
+class PropertyTypeRepository {
+    ~
+}
+
+class PropertyRepository {
+    ~
+}
+
+class PropertyOpsPropertyTypeRepository {
+    + assignProperTypeToProperty(user_id: uuid, property_type_id: uuid, property_id: uuid): Result void, RepositoryError
+    + removePropertyTypeFromProperty(user_id: uuid, property_type_id: uuid, property_id: uuid): Result void, RepositoryError
+    + viewAllPropertyTypeRelatedByPropertyId(user_id: uuid, property_id: uuid): Result ResListEntryPropertyTypeDto, RepositoryError
+    + removeAllPropertyTypeRelatedByPropertyId(user_id: uuid, property_id: uuid): Result void, RepositoryError
+}
+
+class ExpenseTypeRepository {
+    ~
+}
+
+class ExpenseRepository {
+    ~
+}
+
+class CloudFlareR2Repository {
+    - s3: S3Client
+    - bucketName: String
+}
+
+class MemoTypeRepository {
+    ~
+}
+
+class MemoRepository {
+    ~
+}
+
+class FileUserTransactionRepository {
+    ~
+}
+
+class MemoFileRepository {
+    ~
+}
+
+class TransactionTypeRepository {
+    ~
+}
+
+class TransactionRepository {
+    ~
+}
+
+class SaleTransactionRepository {
+    ~
+    + isAvaliableForSale(property_id: uuid): Result boolean, RepositoryError
+}
+
+class SaleFileTransactionRepository {
+    ~
+}
+
+class InvestTransactionRepository {
+    ~
+}
+
+class InvestTransactionItemRepository {
+    ~
+}
+
+class InvestFileTransactionRepository {
+    ~
+}
+
+class ExpenseTransactionRepository {
+    ~
+}
+
+class ExpenseTransactionItemRepository {
+    ~
+}
+
+class ExpenseFileTransactionRepository {
+    ~
+}
+
+%% Interface
+class ReactiveCrudRepository {
+    <<interface>>
+    +findById(id: ID): Mono\<T>
+    +findById(id: Publisher\<ID>): Mono\<T>
+    +findAll(): Flux\<T>
+    +findAllById(ids: Iterable\<ID>): Flux\<T>
+    +findAllById(ids: Publisher\<ID>): Flux\<T>
+    +save(entity: S): Mono\<S> %% S extends T
+    +saveAll(entities: Iterable\<S>): Flux\<S> %% S extends T
+    +saveAll(entities: Publisher\<S>): Flux\<S> %% S extends T
+    +deleteById(id: ID): Mono\<Void>
+    +deleteById(id: Publisher\<ID>): Mono\<Void>
+    +delete(entity: T): Mono\<Void>
+    +deleteAll(): Mono\<Void>
+    +deleteAll(entities: Iterable\<T>): Mono\<Void>
+    +deleteAll(entities: Publisher\<T>): Mono\<Void>
+    +deleteAllById(ids: Iterable\<ID>): Mono\<Void>
+    +existsById(id: ID): Mono\<Boolean>
+    +existsById(id: Publisher\<ID>): Mono\<Boolean>
+    +count(): Mono\<Long>
+}
+UserRepository <|-- ReactiveCrudRepository
+PropertyStatusRepository <|-- ReactiveCrudRepository
+ContactTypeRepository <|-- ReactiveCrudRepository
+ContactRepository <|-- ReactiveCrudRepository
+PropertyTypeRepository <|-- ReactiveCrudRepository
+PropertyRepository <|-- ReactiveCrudRepository
+PropertyOpsPropertyTypeRepository <|-- ReactiveCrudRepository
+ExpenseTypeRepository <|-- ReactiveCrudRepository
+ExpenseRepository <|-- ReactiveCrudRepository
+MemoTypeRepository <|-- ReactiveCrudRepository
+MemoRepository <|-- ReactiveCrudRepository
+FileUserTransactionRepository <|-- ReactiveCrudRepository
+MemoFileRepository <|-- ReactiveCrudRepository
+TransactionTypeRepository <|-- ReactiveCrudRepository
+TransactionRepository <|-- ReactiveCrudRepository
+SaleTransactionRepository <|-- ReactiveCrudRepository
+SaleFileTransactionRepository <|-- ReactiveCrudRepository
+InvestTransactionRepository <|-- ReactiveCrudRepository
+InvestTransactionItemRepository <|-- ReactiveCrudRepository
+InvestFileTransactionRepository <|-- ReactiveCrudRepository
+ExpenseTransactionRepository <|-- ReactiveCrudRepository
+ExpenseTransactionItemRepository <|-- ReactiveCrudRepository
+ExpenseFileTransactionRepository <|-- ReactiveCrudRepository
+
+
+class ICloudflareR2Repository {
+    <<interface>>
+    + saveFile(key: String, inputStream: InputStream, contect_length: Long, content_type: String): Result void, RepositoryError
+    + getFile(prefix: String): Result Optional[String], RepositoryError
+    + getFiles(prefix: String): Result List[String], RepositoryError
+    + deleteFile(prefix: String): Result void, RepositoryError
+    + isFileExist(key: String): Result boolean, RepositoryError
+}
+CloudFlareR2Repository <|-- ICloudflareR2Repository
+
+%% soc error
+class RepositoryError {
+    <<enumeration>>
+    NOT_FOUND %% No record found for given ID or query
+    DUPLICATE_KEY %% Unique constraint violation
+    CONNECTION_FAILED %% Cannot connect to database
+    TIMEOUT %% Query took too long
+    CONSTRAINT_VIOLATION %% Foreign key or validation failed
+    DATA_INTEGRITY_ERROR %% Unexpected or corrupt data state
+    UNAUTHORIZED %% Access denied (optional in repo layer)
+    UNKNOWN_ERROR %% Catch-all for uncategorized failures
+}
+
+class ServiceError {
+    <<enumeration>>
+    VALIDATION_FAILED %% Input data is invalid or incomplete
+    UNAUTHORIZED %% User is not authenticated or lacks permission
+    FORBIDDEN %% Action is not allowed even if authenticated
+    NOT_FOUND %% The requested resource was not found
+    CONFLICT %% Resource already exists or conflicts with current state
+    DEPENDENCY_FAILURE %% A required service or dependency failed
+    TIMEOUT %% Service operation exceeded time limit
+    INTERNAL_ERROR %% Unexpected server-side logic failure
+}
+                                        
