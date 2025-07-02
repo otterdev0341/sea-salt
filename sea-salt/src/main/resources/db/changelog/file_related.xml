@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>	
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+    xmlns:pro="http://www.liquibase.org/xml/ns/pro"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd
+        http://www.liquibase.org/xml/ns/dbchangelog-ext
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd
+        http://www.liquibase.org/xml/ns/pro
+        http://www.liquibase.org/xml/ns/pro/liquibase-pro-latest.xsd">
+
+    
+
+    <!-- file type -->
+    <changeSet id="1" author="otterdev_ball">
+        <comment>create file type table</comment>
+        <createTable tableName="file_type">
+            <column name="id" type="UUID">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="description" type="VARCHAR(50)">
+                <constraints unique="true" nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="2" author="otterdev_ball">
+        <comment>insert default file type values</comment>
+        <insert tableName="file_type">
+            <column name="id" value="91e18061-3b9f-4e64-a6ee-40e4b1994a75"/>
+            <column name="description" value="picture"/>
+        </insert>
+        <insert tableName="file_type">
+            <column name="id" value="c4d9c0f0-e228-4ad5-84e9-3ec1ed09cbb1"/>
+            <column name="description" value="pdf"/>
+        </insert>
+        <insert tableName="file_type">
+            <column name="id" value="0aef3877-69d5-4a91-9720-9d21e7075c7d"/>
+            <column name="description" value="other"/>
+        </insert>
+    </changeSet>
+
+    <!-- end file type -->
+    <!-- file -->
+    <changeSet id="3" author="otterdev_ball">
+        <comment>create file table</comment>
+        <createTable tableName="file_detail">
+            <column name="id" type="UUID">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="object_key" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="url" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="content_type" type="UUID"> <!-- relation focus -->
+                <constraints nullable="false"/>
+            </column>
+            <column name="size" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="uploaded_by" type="UUID"> <!-- relation focus -->
+                <constraints nullable="false"/>
+            </column>
+            <column name="uploaded_at" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet id="4" author="otterdev_ball">
+        <comment>relation of file to file_type</comment>
+        <addForeignKeyConstraint
+            baseTableName="file_detail"
+            baseColumnNames="content_type"
+            constraintName="fk_file_file_type"
+            referencedTableName="file_type"
+            referencedColumnNames="id"
+            onDelete="RESTRICT"
+            onUpdate="CASCADE" />
+        <addForeignKeyConstraint
+            baseTableName="file_detail"
+            baseColumnNames="uploaded_by"
+            constraintName="fk_file_user"
+            referencedTableName="user"
+            referencedColumnNames="id"
+            onDelete="RESTRICT"
+            onUpdate="CASCADE" />
+    </changeSet>
+    <!-- end file -->
+
+
+</databaseChangeLog>

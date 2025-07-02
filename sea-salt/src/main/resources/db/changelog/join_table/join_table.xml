@@ -1,0 +1,288 @@
+<?xml version="1.0" encoding="UTF-8"?>	
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+    xmlns:pro="http://www.liquibase.org/xml/ns/pro"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd
+        http://www.liquibase.org/xml/ns/dbchangelog-ext
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd
+        http://www.liquibase.org/xml/ns/pro
+        http://www.liquibase.org/xml/ns/pro/liquibase-pro-latest.xsd">
+
+   
+    <!-- property x property_type -->
+    <changeSet id="1" author="otterdev_ball">
+        <comment>create property x property_type table</comment>
+        <createTable tableName="property_property_type">
+            <column name="property_id" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+            <column name="property_type_id" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <!-- fk -->
+    <changeSet id="2" author="otterdev_ball">
+        <comment>relation of property x property_type to property</comment>
+        <addForeignKeyConstraint
+            baseTableName="property_property_type"
+            baseColumnNames="property_id"
+            constraintName="fk_property_x_property_type_property"
+            referencedTableName="property_type"
+            referencedColumnNames="id"
+            onDelete="CASCADE"
+            onUpdate="CASCADE" />
+    </changeSet>
+    <!-- end property x property_type -->
+
+    <!-- file user transaction -->
+    <changeSet id="3" author="otterdev_ball">
+        <comment>create file x user</comment>
+        <createTable tableName="file_user">
+            <column name="id" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+            <column name="file_id" type="UUID"> <!-- relation focus -->
+                <constraints nullable="false"/>
+            </column>
+            <column name="user_id" type="UUID"> <!-- relation focus -->
+                <constraints nullable="false"/>
+            </column>
+            <column name="file_type_id" type="UUID"> <!-- relation focus -->
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet id="4" author="otterdev_ball">
+        <comment>relation of file x user to file</comment>
+        <addForeignKeyConstraint
+            baseTableName="file_user"
+            baseColumnNames="file_id"
+            constraintName="fk_file_user_transaction_file"
+            referencedTableName="file_detail"
+            referencedColumnNames="id"
+            onDelete="CASCADE"
+            onUpdate="CASCADE" />
+        <addForeignKeyConstraint
+            baseTableName="file_user"
+            baseColumnNames="user_id"
+            constraintName="fk_file_user_transaction_user"
+            referencedTableName="user"
+            referencedColumnNames="id"
+            onDelete="CASCADE"
+            onUpdate="CASCADE" />
+        <addForeignKeyConstraint
+            baseTableName="file_user"
+            baseColumnNames="file_type_id"
+            constraintName="fk_file_user_transaction_file_type"
+            referencedTableName="file_type"
+            referencedColumnNames="id"
+            onDelete="CASCADE"
+            onUpdate="CASCADE" />
+    </changeSet>
+    <!-- end file user transaction -->
+
+
+    <!-- expense file -->
+    <changeSet id="5" author="otterdev_ball">
+        <comment>create expense x file table</comment>
+        <createTable tableName="expense_file">
+            <column name="expense_id" type="UUID"> <!-- relation focus -->
+                <constraints nullable="false"/>
+            </column>
+            <column name="file_detail_id" type="UUID"> <!-- relation focus -->
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet id="6" author="otterdev_ball">
+        <comment>relation of expense x file to expense</comment>
+        <addForeignKeyConstraint
+            baseTableName="expense_file"
+            baseColumnNames="expense_id"
+            constraintName="fk_expense_x_file_expense"
+            referencedTableName="expense"
+            referencedColumnNames="id"
+            onDelete="CASCADE"
+            onUpdate="CASCADE" />
+        <addForeignKeyConstraint
+            baseTableName="expense_file"
+            baseColumnNames="file_detail_id"
+            constraintName="fk_expense_x_file_file"
+            referencedTableName="file_detail"
+            referencedColumnNames="id"
+            onDelete="CASCADE"
+            onUpdate="CASCADE" />
+    </changeSet>
+    <!-- end expense file -->
+
+    <!-- memo file -->
+    <changeSet id="7" author="otterdev_ball">
+        <comment>create memo x file table</comment>
+        <createTable tableName="memo_file">
+            <column name="memo_id" type="UUID"> <!-- relation focus -->
+                <constraints nullable="false"/>
+            </column>
+            <column name="file_detail_id" type="UUID"> <!-- relation focus -->
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet id="8" author="otterdev_ball">
+        <comment>relation of memo x file to memo</comment>
+        <addForeignKeyConstraint
+            baseTableName="memo_file"
+            baseColumnNames="memo_id"
+            constraintName="fk_memo_x_file_memo"
+            referencedTableName="memo"
+            referencedColumnNames="id"
+            onDelete="CASCADE"
+            onUpdate="CASCADE" />
+        <addForeignKeyConstraint
+            baseTableName="memo_file"
+            baseColumnNames="file_detail_id"
+            constraintName="fk_memo_x_file_file"
+            referencedTableName="file_detail"
+            referencedColumnNames="id"
+            onDelete="CASCADE"
+            onUpdate="CASCADE" />
+    </changeSet>
+    <!-- end memo file -->
+
+    <!-- invest file -->
+    <changeSet id="9" author="otterdev_ball">
+        <comment>create invest x file table</comment>
+        <createTable tableName="invest_file">
+            <column name="invest_id" type="UUID"> <!-- relation focus -->
+                <constraints nullable="false"/>
+            </column>
+            <column name="file_detail_id" type="UUID"> <!-- relation focus -->
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet id="10" author="otterdev_ball">
+        <comment>relation of invest x file to invest</comment>
+        <addForeignKeyConstraint
+            baseTableName="invest_file"
+            baseColumnNames="invest_id"
+            constraintName="fk_invest_x_file_invest"
+            referencedTableName="invest_transaction"
+            referencedColumnNames="id"
+            onDelete="CASCADE"
+            onUpdate="CASCADE" />
+        <addForeignKeyConstraint
+            baseTableName="invest_file"
+            baseColumnNames="file_detail_id"
+            constraintName="fk_invest_x_file_file"
+            referencedTableName="file_detail"
+            referencedColumnNames="id"
+            onDelete="CASCADE"
+            onUpdate="CASCADE" />
+    </changeSet>
+    <!-- end invest file -->
+
+    <!-- property file -->
+    <changeSet id="11" author="otterdev_ball">
+        <comment>create property x file table</comment>
+        <createTable tableName="property_file">
+            <column name="property_id" type="UUID"> <!-- relation focus -->
+                <constraints nullable="false"/>
+            </column>
+            <column name="file_detail_id" type="UUID"> <!-- relation focus -->
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet id="12" author="otterdev_ball">
+        <comment>relation of property x file to property</comment>
+        <addForeignKeyConstraint
+            baseTableName="property_file"
+            baseColumnNames="property_id"
+            constraintName="fk_property_x_file_property"
+            referencedTableName="property"
+            referencedColumnNames="id"
+            onDelete="CASCADE"
+            onUpdate="CASCADE" />
+        <addForeignKeyConstraint
+            baseTableName="property_file"
+            baseColumnNames="file_detail_id"
+            constraintName="fk_property_x_file_file"
+            referencedTableName="file_detail"
+            referencedColumnNames="id"
+            onDelete="CASCADE"
+            onUpdate="CASCADE" />
+    </changeSet>
+    <!-- end property file -->
+
+    <!-- sale file -->
+    <changeSet id="13" author="otterdev_ball">
+        <comment>create sale x file table</comment>
+        <createTable tableName="sale_file">
+            <column name="sale_id" type="UUID"> <!-- relation focus -->
+                <constraints nullable="false"/>
+            </column>
+            <column name="file_detail_id" type="UUID"> <!-- relation focus -->
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet id="14" author="otterdev_ball">
+        <comment>relation of sale x file to sale</comment>
+        <addForeignKeyConstraint
+            baseTableName="sale_file"
+            baseColumnNames="sale_id"
+            constraintName="fk_sale_x_file_sale"
+            referencedTableName="sale_transaction"
+            referencedColumnNames="id"
+            onDelete="CASCADE"
+            onUpdate="CASCADE" />
+        <addForeignKeyConstraint
+            baseTableName="sale_file"
+            baseColumnNames="file_detail_id"
+            constraintName="fk_sale_x_file_file"
+            referencedTableName="file_detail"
+            referencedColumnNames="id"
+            onDelete="CASCADE"
+            onUpdate="CASCADE" />
+    </changeSet>
+    <!-- end sale file -->
+
+    <!-- memo property -->
+    <changeSet id="15" author="otterdev_ball">
+        <comment>create memo x property table</comment>
+        <createTable tableName="memo_property">
+            <column name="memo_id" type="UUID"> <!-- relation focus -->
+                <constraints nullable="false"/>
+            </column>
+            <column name="property_id" type="UUID"> <!-- relation focus -->
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet id="16" author="otterdev_ball">
+        <comment>relation of memo x property to memo</comment>
+        <addForeignKeyConstraint
+            baseTableName="memo_property"
+            baseColumnNames="memo_id"
+            constraintName="fk_memo_x_property_memo"
+            referencedTableName="memo"
+            referencedColumnNames="id"
+            onDelete="CASCADE"
+            onUpdate="CASCADE" />
+        <addForeignKeyConstraint
+            baseTableName="memo_property"
+            baseColumnNames="property_id"
+            constraintName="fk_memo_x_property_property"
+            referencedTableName="property"
+            referencedColumnNames="id"
+            onDelete="CASCADE"
+            onUpdate="CASCADE" />
+    </changeSet>
+    <!-- end memo property -->
+
+
+</databaseChangeLog>

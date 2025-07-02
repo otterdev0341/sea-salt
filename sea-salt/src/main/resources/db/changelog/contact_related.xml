@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>	
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+    xmlns:pro="http://www.liquibase.org/xml/ns/pro"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd
+        http://www.liquibase.org/xml/ns/dbchangelog-ext
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd
+        http://www.liquibase.org/xml/ns/pro
+        http://www.liquibase.org/xml/ns/pro/liquibase-pro-latest.xsd">
+
+   
+    <!-- contact type -->
+    <changeSet id="1" author="otterdev_ball">
+        <comment>create contact type table</comment>
+        <createTable tableName="contact_type">
+            <column name="id" type="UUID">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="description" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_by" type="UUID" > <!-- relation focus-->
+                <constraints nullable="false"/>
+            </column>   
+            <column name="created_at" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="updated_at" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <!-- contact type relation -->
+    <changeSet id="2" author="otterdev_ball">
+        <comment>relation of contact_type to user</comment>
+        <addForeignKeyConstraint  
+            baseTableName="contact_type"  
+            baseColumnNames="created_by"  
+            constraintName="fk_contact_type_user"  
+            referencedTableName="user"  
+            referencedColumnNames="id"
+            onDelete="RESTRICT"
+            onUpdate="CASCADE" />
+    </changeSet>
+    <!-- end contact type -->
+
+    <!-- contact -->
+    <changeSet id="3" author="otterdev_ball">
+        <comment>create contact table</comment>
+        <createTable tableName="contact">
+            <column name="id" type="UUID">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="business_name" type="VARCHAR(255)">
+                <constraints nullable="false" />
+            </column>
+            <column name="internal_name" type="VARCHAR(255)"/>
+            <column name="detail" type="VARCHAR(255)"/>
+            <column name="note" type="VARCHAR(255)"/>
+            <column name="contact_type_id" type="UUID"> <!-- relation focus-->
+                <constraints nullable="false"/>
+            </column>
+            <column name="address" type="VARCHAR(255)"/>
+            <column name="phone" type="VARCHAR(255)"/>
+            <column name="mobile_phone" type="VARCHAR(255)"/>
+            <column name="line" type="VARCHAR(255)"/>
+            <column name="email" type="VARCHAR(255)"/>
+            <column name="created_by" type="UUID"> <!-- relation focus-->
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_at" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="updated_at" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet id="4" author="otterdev_ball">
+        <comment>relation of contact to contact_type</comment>
+        <addForeignKeyConstraint  
+            baseTableName="contact"  
+            baseColumnNames="contact_type_id"  
+            constraintName="fk_contact_contact_type"  
+            referencedTableName="contact_type"  
+            referencedColumnNames="id"
+            onDelete="RESTRICT"
+            onUpdate="CASCADE" />
+    </changeSet>
+    <changeSet id="5" author="otterdev_ball">
+        <comment>relation of contact to user</comment>
+        <addForeignKeyConstraint  
+            baseTableName="contact"  
+            baseColumnNames="created_by"  
+            constraintName="fk_contact_user"  
+            referencedTableName="user"  
+            referencedColumnNames="id"
+            onDelete="RESTRICT"
+            onUpdate="CASCADE" />
+    </changeSet>
+     <!-- end contact -->
+</databaseChangeLog>

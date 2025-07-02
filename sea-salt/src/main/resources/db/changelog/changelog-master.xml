@@ -11,10 +11,16 @@
         http://www.liquibase.org/xml/ns/pro
         http://www.liquibase.org/xml/ns/pro/liquibase-pro-latest.xsd">
 
-    <preConditions>  
-        <runningAs  username="liquibase"/>  
-    </preConditions>  
 
     
+    <include file="db/changelog/gender.xml" />
+    <include file="db/changelog/user.xml" />
+<include file="db/changelog/file_related.xml" />
+<include file="db/changelog/contact_related.xml" />
+<include file="db/changelog/property_related.xml" />
+<include file="db/changelog/expense_related.xml" />
+<include file="db/changelog/memo_related.xml" />
+<include file="db/changelog/transaction/transaction_related.xml" />
+<include file="db/changelog/join_table/join_table.xml" />
 
 </databaseChangeLog>

@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>	
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+    xmlns:pro="http://www.liquibase.org/xml/ns/pro"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd
+        http://www.liquibase.org/xml/ns/dbchangelog-ext
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd
+        http://www.liquibase.org/xml/ns/pro
+        http://www.liquibase.org/xml/ns/pro/liquibase-pro-latest.xsd">
+
+    
+   <!-- expense type -->
+    <changeSet id="1" author="otterdev_ball">
+         <comment>create expense type table</comment>
+         <createTable tableName="expense_type">
+              <column name="id" type="UUID">
+                <constraints primaryKey="true" nullable="false"/>
+              </column>
+              <column name="detail" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+              </column>
+              <column name="created_by" type="UUID"> <!-- relation focus -->
+                <constraints nullable="false"/>
+              </column>
+              <column name="created_at" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP">
+                <constraints nullable="false"/>
+              </column>
+              <column name="updated_at" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP">
+                <constraints nullable="false"/>
+              </column>
+         </createTable>
+    </changeSet>
+    <!-- expense type relation -->
+    <changeSet id="2" author="otterdev_ball">
+        <comment>relation of expense_type to user</comment>
+        <addForeignKeyConstraint
+            baseTableName="expense_type"
+            baseColumnNames="created_by"
+            constraintName="fk_expense_type_user"
+            referencedTableName="user"
+            referencedColumnNames="id"
+            onDelete="RESTRICT"
+            onUpdate="CASCADE" />
+    </changeSet>
+   <!-- end expense type -->
+   <!-- expense -->
+    <changeSet id="3" author="otterdev_ball">
+        <comment>create expense table</comment>
+        <createTable tableName="expense">
+            <column name="id" type="UUID">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="detail" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="expense_type" type="UUID"> <!-- relation focus -->
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_by" type="UUID"> <!-- relation focus -->
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_at" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="updated_at" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <!-- expense relation -->
+    <changeSet id="4" author="otterdev_ball">
+        <comment>relation of expense to user and expense_type</comment>
+        <addForeignKeyConstraint
+            baseTableName="expense"
+            baseColumnNames="created_by"
+            constraintName="fk_expense_user"
+            referencedTableName="user"
+            referencedColumnNames="id"
+            onDelete="RESTRICT"
+            onUpdate="CASCADE" />
+        <addForeignKeyConstraint
+            baseTableName="expense"
+            baseColumnNames="expense_type"
+            constraintName="fk_expense_expense_type"
+            referencedTableName="expense_type"
+            referencedColumnNames="id"
+            onDelete="RESTRICT"
+            onUpdate="CASCADE" />
+    </changeSet>
+   <!-- end expense -->
+
+</databaseChangeLog>

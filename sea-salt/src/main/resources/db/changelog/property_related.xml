@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="UTF-8"?>	
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+    xmlns:pro="http://www.liquibase.org/xml/ns/pro"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd
+        http://www.liquibase.org/xml/ns/dbchangelog-ext
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd
+        http://www.liquibase.org/xml/ns/pro
+        http://www.liquibase.org/xml/ns/pro/liquibase-pro-latest.xsd">
+
+      
+    <!-- property type -->
+   <changeSet id="1" author="otterdev_ball">
+        <comment>Create property type table</comment>
+        <createTable tableName="property_type">
+            <column name="id" type="uuid">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="detail" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_by" type="uuid" >
+                <constraints nullable="false"/>
+            </column>
+           <column name="created_at" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            
+            <column name="updated_at" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            
+        </createTable>
+   </changeSet>
+
+   <changeSet id="2" author="otterdev_ball">
+        <comment>relation of property_type to user</comment>
+        <addForeignKeyConstraint 
+            baseTableName="property_type" 
+            baseColumnNames="created_by" 
+            constraintName="fk_property_type_user" 
+            referencedTableName="user" 
+            referencedColumnNames="id"
+            onDelete="RESTRICT"
+            onUpdate="CASCADE" />
+   </changeSet>
+   <!-- end property type -->
+   <!-- property status -->
+    <changeSet id="3" author="otterdev_ball">
+        <comment>Create property status table</comment>
+        <createTable tableName="property_status">
+            <column name="id" type="uuid">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="detail" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_by" type="uuid" >
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_at" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            
+            <column name="updated_at" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            
+        </createTable>
+    </changeSet>
+    <changeSet id="4" author="otterdev_ball">
+        <comment>relation of property_type to user</comment>
+        <addForeignKeyConstraint 
+            baseTableName="property_status" 
+            baseColumnNames="created_by" 
+            constraintName="fk_property_status_user" 
+            referencedTableName="user" 
+            referencedColumnNames="id"
+            onDelete="RESTRICT"
+            onUpdate="CASCADE" />
+   </changeSet>
+   <!-- end property status -->
+
+   <!-- property -->
+    <changeSet id="5" author="otterdev_ball">
+        <comment>create property table</comment>
+        <createTable tableName="property">
+            <column name="id" type="uuid">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="name" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="description" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="specific" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="hilight" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="area" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="price" type="double(2,0)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="f_s_p" type="double(2,0)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="status" type="uuid"> <!-- relation focus-->
+                <constraints nullable="false"/>
+            </column>
+            <column name="owner_by" type="uuid" ><!-- relation focus-->
+                <constraints nullable="false"/>
+            </column>
+            <column name="map_url" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="lat" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="long" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="sold" type="boolean" defaultValue="false">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_by" type="uuid" > <!-- relation focus-->
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_at" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            
+            <column name="updated_at" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet id="6" author="otterdev_ball">
+        <comment>relation of property to property status</comment>
+        <addForeignKeyConstraint 
+            baseTableName="property" 
+            baseColumnNames="status" 
+            constraintName="fk_property_user" 
+            referencedTableName="property_status" 
+            referencedColumnNames="id"
+            onDelete="RESTRICT"
+            onUpdate="CASCADE" />
+    </changeSet>
+    <changeSet id="7" author="otterdev_ball">
+        <comment>relation of property to property status</comment>
+        <addForeignKeyConstraint 
+            baseTableName="property" 
+            baseColumnNames="owner_by" 
+            constraintName="fk_property_owner" 
+            referencedTableName="contact" 
+            referencedColumnNames="id"
+            onDelete="RESTRICT"
+            onUpdate="CASCADE" />
+    </changeSet>
+    <changeSet id="8" author="otterdev_ball">
+        <comment>relation of property to property status</comment>
+        <addForeignKeyConstraint 
+            baseTableName="property" 
+            baseColumnNames="created_by" 
+            constraintName="fk_property_user_created" 
+            referencedTableName="user" 
+            referencedColumnNames="id"
+            onDelete="RESTRICT"
+            onUpdate="CASCADE" />
+    </changeSet>
+    <!-- end property -->
+</databaseChangeLog>

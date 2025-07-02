@@ -11,7 +11,7 @@ import reactor.core.publisher.Mono;
 public class Greeting {
     
     @GetMapping("/hello")
-    public Mono<String> hello() {
+    public Mono<String> hello_test() {
         return Mono.just("Hello, World!");
     }
 

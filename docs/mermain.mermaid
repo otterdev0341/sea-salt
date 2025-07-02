@@ -136,7 +136,7 @@ class ResEntryContactDto {
     internalName: String
     detail: String
     note: String
-    contactTypeId: uuid
+    contactType: String
     address: String
     phone: String
     mobilePhone: String
@@ -434,11 +434,14 @@ class ResListEntryInvestTransactionItemDto {
 %% expense 
 class ReqCreateExpenseTransactionDto {
     note: String
+    property_id: uuid
     item: List<ReqCreateExpenseTransactionItemDto>
 }
 class ReqCreateExpenseTransactionItemDto{
     expenseId: uuid
+
     amount: double
+    price: double
 }
 class ReqUpdateExpenseTransactionDto {
     id: uuid
