@@ -20,7 +20,7 @@ public interface UserRepository extends ReactiveCrudRepository<User, UUID> {
      * @return a Mono containing the User if found, or empty if not found
      */
     Mono<User> findByEmail(String email);
-
+    Mono<User> findByUsername(String username);
     /**
      * Find a user by first name and last name.
      *
