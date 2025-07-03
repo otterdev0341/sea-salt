@@ -70,7 +70,7 @@
             baseTableName="file_user"
             baseColumnNames="user_id"
             constraintName="fk_file_user_transaction_user"
-            referencedTableName="user"
+            referencedTableName="users"
             referencedColumnNames="id"
             onDelete="CASCADE"
             onUpdate="CASCADE" />

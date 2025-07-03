@@ -40,7 +40,7 @@
             baseTableName="memo_type"
             baseColumnNames="created_by"
             constraintName="fk_memo_type_user"
-            referencedTableName="user"
+            referencedTableName="users"
             referencedColumnNames="id"
             onDelete="RESTRICT"
             onUpdate="CASCADE" />
@@ -81,7 +81,7 @@
             baseTableName="memo"
             baseColumnNames="created_by"
             constraintName="fk_memo_user"
-            referencedTableName="user"
+            referencedTableName="users"
             referencedColumnNames="id"
             onDelete="RESTRICT"
             onUpdate="CASCADE" />

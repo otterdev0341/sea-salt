@@ -9,7 +9,9 @@ import org.springframework.web.reactive.config.EnableWebFlux;
 @EnableWebFlux
 // This annotation enables Spring WebFlux, which is a reactive web framework.
 @ComponentScan({"com.otterdev.sea_salt.controller", 
-				"com.otterdev.sea_salt.config"
+				"com.otterdev.sea_salt.config",
+				"com.otterdev.sea_salt.service",
+				"com.otterdev.sea_salt.repository"
 				// Add other packages as needed
 				})
 // This annotation allows Spring to scan for components in the specified packages.

@@ -17,15 +17,17 @@
     <changeSet id="1" author="otterdev_ball">
         <comment>create user table with automatic timestamps</comment>
 
-        <createTable tableName="user">
-            <column name="id" type="UUID">
+        <createTable tableName="users">
+            <column name="id" type="uuid" defaultValueComputed="gen_random_uuid()">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
             
             <column name="email" type="VARCHAR(50)">
                 <constraints unique="true" nullable="false"/>
             </column>
-            
+            <column name="username" type="VARCHAR(50)">
+                <constraints unique="true" nullable="false"/>
+            </column>
             <column name="password" type="VARCHAR(100)">
                 <constraints nullable="false"/>
             </column>
@@ -63,7 +65,7 @@
     <changeSet id="2" author="otterdev_ball">
         <comment>add foreign key from user.gender to gender.id</comment>
         <addForeignKeyConstraint
-            baseTableName="user"
+            baseTableName="users"
             baseColumnNames="gender"
             constraintName="fk_user_gender"
             referencedTableName="gender"

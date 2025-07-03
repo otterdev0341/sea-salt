@@ -1,20 +1,41 @@
 version: '3.8'
 
 services:
-  mariadb:
-    image: mariadb:10.6
-    container_name: mariadb-srping-sea-salt
+  postgresql:
+    image: postgres:15
+    container_name: postgresql-spring-sea-salt
     restart: always
     environment:
-      MARIADB_ROOT_PASSWORD: root_password
-      MARIADB_DATABASE: spring-sea-salt
-      MARIADB_USER: sea_salt_user
-      MARIADB_PASSWORD: sea_salt_password
+      POSTGRES_DB: spring-sea-salt
+      POSTGRES_USER: sea_salt_user
+      POSTGRES_PASSWORD: sea_salt_password
+      POSTGRES_ROOT_PASSWORD: root_password
     ports:
-      - "3308:3306"
+      - "7777:5432"
     volumes:
-      - mariadb_data:/var/lib/mysql
-      - ./mariadb/my.cnf:/etc/mysql/conf.d/my.cnf:ro
+      - postgresql_data:/var/lib/postgresql/data
+      - ./postgresql/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U sea_salt_user -d spring-sea-salt"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # Optional: Add pgAdmin for database management
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    container_name: pgadmin-spring-sea-salt
+    restart: always
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@seasalt.com
+      PGADMIN_DEFAULT_PASSWORD: admin_password
+    ports:
+      - "5050:80"
+    depends_on:
+      - postgresql
+    volumes:
+      - pgadmin_data:/var/lib/pgadmin
 
 volumes:
-  mariadb_data:
+  postgresql_data:
+  pgadmin_data:

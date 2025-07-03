@@ -100,7 +100,7 @@
                     baseTableName="transaction"
                     baseColumnNames="user_id"
                     constraintName="fk_transaction_user"
-                    referencedTableName="user"
+                    referencedTableName="users"
                     referencedColumnNames="id"
                     onDelete="RESTRICT"
                     onUpdate="CASCADE" />   
@@ -193,7 +193,7 @@
                 baseTableName="sale_transaction"
                 baseColumnNames="user_id"
                 constraintName="fk_sale_transaction_user"
-                referencedTableName="user"
+                referencedTableName="users"
                 referencedColumnNames="id"
                 onDelete="RESTRICT"
                 onUpdate="CASCADE" />
@@ -243,7 +243,7 @@
                     baseTableName="invest_transaction"
                     baseColumnNames="user_id"
                     constraintName="fk_invest_transaction_user"
-                    referencedTableName="user"
+                    referencedTableName="users"
                     referencedColumnNames="id"
                     onDelete="RESTRICT"
                     onUpdate="CASCADE" />
@@ -323,7 +323,7 @@
             baseTableName="payment_transaction"
             baseColumnNames="user_id"
             constraintName="fk_payment_transaction_user"
-            referencedTableName="user"
+            referencedTableName="users"
             referencedColumnNames="id"
             onDelete="RESTRICT"
             onUpdate="CASCADE" />

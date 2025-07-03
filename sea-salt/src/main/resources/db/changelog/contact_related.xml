@@ -40,7 +40,7 @@
             baseTableName="contact_type"  
             baseColumnNames="created_by"  
             constraintName="fk_contact_type_user"  
-            referencedTableName="user"  
+            referencedTableName="users"  
             referencedColumnNames="id"
             onDelete="RESTRICT"
             onUpdate="CASCADE" />
@@ -96,7 +96,7 @@
             baseTableName="contact"  
             baseColumnNames="created_by"  
             constraintName="fk_contact_user"  
-            referencedTableName="user"  
+            referencedTableName="users"  
             referencedColumnNames="id"
             onDelete="RESTRICT"
             onUpdate="CASCADE" />

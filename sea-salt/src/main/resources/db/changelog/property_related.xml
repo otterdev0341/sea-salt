@@ -42,7 +42,7 @@
             baseTableName="property_type" 
             baseColumnNames="created_by" 
             constraintName="fk_property_type_user" 
-            referencedTableName="user" 
+            referencedTableName="users" 
             referencedColumnNames="id"
             onDelete="RESTRICT"
             onUpdate="CASCADE" />
@@ -77,7 +77,7 @@
             baseTableName="property_status" 
             baseColumnNames="created_by" 
             constraintName="fk_property_status_user" 
-            referencedTableName="user" 
+            referencedTableName="users" 
             referencedColumnNames="id"
             onDelete="RESTRICT"
             onUpdate="CASCADE" />
@@ -170,7 +170,7 @@
             baseTableName="property" 
             baseColumnNames="created_by" 
             constraintName="fk_property_user_created" 
-            referencedTableName="user" 
+            referencedTableName="users" 
             referencedColumnNames="id"
             onDelete="RESTRICT"
             onUpdate="CASCADE" />

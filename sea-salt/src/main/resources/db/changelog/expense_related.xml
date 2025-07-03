@@ -40,7 +40,7 @@
             baseTableName="expense_type"
             baseColumnNames="created_by"
             constraintName="fk_expense_type_user"
-            referencedTableName="user"
+            referencedTableName="users"
             referencedColumnNames="id"
             onDelete="RESTRICT"
             onUpdate="CASCADE" />
@@ -77,7 +77,7 @@
             baseTableName="expense"
             baseColumnNames="created_by"
             constraintName="fk_expense_user"
-            referencedTableName="user"
+            referencedTableName="users"
             referencedColumnNames="id"
             onDelete="RESTRICT"
             onUpdate="CASCADE" />

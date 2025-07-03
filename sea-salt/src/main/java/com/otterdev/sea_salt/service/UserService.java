@@ -59,10 +59,11 @@ public class UserService {
                                         .switchIfEmpty(Mono.error(new InvalidGenderException("Invalid gender: " + user.getGender())))
                                         .flatMap(gender -> {
                                             User newUser = new User();
+                                            // newUser.setId(UUID.randomUUID().toString()); // Generate a new UUID
                                             newUser.setFirstName(user.getFirstName());
                                             newUser.setLastName(user.getLastName());
                                             newUser.setEmail(user.getEmail());
-                                            newUser.setUsername(user.getUsername()); // Set username
+                                            newUser.setUsername(user.getUsername());
                                             newUser.setDob(user.getDob());
 
                                             // 🔐 Hash password
@@ -71,12 +72,17 @@ public class UserService {
 
                                             // 👤 Set gender ID
                                             newUser.setGender(gender.getId());
-
-                                            return userRepository.save(newUser);
+                                            newUser.setRole("USER"); // Default role
+                                            
+                                            return userRepository.save(newUser)
+                                                    .map(savedUser -> Result.<User, RuntimeException>ok(savedUser))
+                                                    .onErrorResume(e -> Mono.just(Result.<User, RuntimeException>err(
+                                                        new RuntimeException("Failed to save user: " + e.getMessage())
+                                                    )));
                                         })
-                                        .map(savedUser -> Result.<User, RuntimeException>ok(savedUser))
-                                        .onErrorReturn(throwable -> throwable instanceof RuntimeException,
-                                                Result.err((RuntimeException) new RuntimeException("Registration failed")));
+                                        .onErrorResume(e -> Mono.just(Result.<User, RuntimeException>err(
+                                            e instanceof RuntimeException ? (RuntimeException) e : new RuntimeException(e.getMessage())
+                                        )));
                             });
                 });
     }

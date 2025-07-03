@@ -84,7 +84,7 @@
             baseTableName="file_detail"
             baseColumnNames="uploaded_by"
             constraintName="fk_file_user"
-            referencedTableName="user"
+            referencedTableName="users"
             referencedColumnNames="id"
             onDelete="RESTRICT"
             onUpdate="CASCADE" />
