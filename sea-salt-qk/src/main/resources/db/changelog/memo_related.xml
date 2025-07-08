@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>	
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+    xmlns:pro="http://www.liquibase.org/xml/ns/pro"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd
+        http://www.liquibase.org/xml/ns/dbchangelog-ext
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd
+        http://www.liquibase.org/xml/ns/pro
+        http://www.liquibase.org/xml/ns/pro/liquibase-pro-latest.xsd">
+
+    
+    <!-- memo type -->
+    <changeSet id="1" author="otterdev_ball">
+        <comment>create memo type table</comment>
+        <createTable tableName="memo_type">
+            <column name="id" type="UUID">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="detail" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_by" type="UUID"> <!-- relation focus -->
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_at" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="updated_at" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <!-- memo type relation -->
+    <changeSet id="2" author="otterdev_ball">
+        <comment>relation of memo_type to user</comment>
+        <addForeignKeyConstraint
+            baseTableName="memo_type"
+            baseColumnNames="created_by"
+            constraintName="fk_memo_type_user"
+            referencedTableName="users"
+            referencedColumnNames="id"
+            onDelete="RESTRICT"
+            onUpdate="CASCADE" />
+    </changeSet>    
+    <!-- end memo type -->
+    
+    <!-- memo -->
+    <changeSet id="3" author="otterdev_ball">
+        <comment>create memo table</comment>
+        <createTable tableName="memo">
+            <column name="id" type="UUID">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="name" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="memo_type" type="UUID"> <!-- relation focus -->
+                <constraints nullable="false"/>
+            </column>
+            <column name="detail" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_by" type="UUID"> <!-- relation focus -->
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_at" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="updated_at" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <!-- memo relation -->
+    <changeSet id="4" author="otterdev_ball">
+        <comment>relation of memo to user and memo_type</comment>
+        <addForeignKeyConstraint
+            baseTableName="memo"
+            baseColumnNames="created_by"
+            constraintName="fk_memo_user"
+            referencedTableName="users"
+            referencedColumnNames="id"
+            onDelete="RESTRICT"
+            onUpdate="CASCADE" />
+    </changeSet>
+    <!-- end memo -->
+</databaseChangeLog>
