@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class ReqCreateProperty {
+public class ReqCreatePropertyDto {
     @NotBlank(message = "Name cannot be blank")
     private String name;
     private String description;

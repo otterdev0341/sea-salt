@@ -11,8 +11,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ReqUpdateProperty {
-    @NotBlank(message = "ID cannot be blank")
-    private UUID id;
     @NotBlank(message = "Name cannot be blank")
     private String name;
     private String description;

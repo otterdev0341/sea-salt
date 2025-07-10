@@ -37,8 +37,9 @@ public class FileDetail {
     @Column(name= "url")
     private String url;
 
-    @Column(name= "content_type")
-    private String contentType;
+    @ManyToOne
+    @JoinColumn(name = "content_type_id", referencedColumnName = "id", nullable = false)
+    private FileType contentType;
 
     @Column(name= "size")
     private String size;

@@ -25,5 +25,5 @@ public class ReqCreateUpdateMemoDto {
 
     @NotBlank(message = "Created at cannot be blank")
     private LocalDateTime createdAt;
-    private LocalDateTime updatedAt;
+    
 }

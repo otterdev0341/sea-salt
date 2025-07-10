@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class ReqCreateUpdatePropertyStatus {
+public class ReqCreateUpdatePropertyStatusDto {
     
     @NotBlank(message = "Property status name cannot be null")
     private String detail;

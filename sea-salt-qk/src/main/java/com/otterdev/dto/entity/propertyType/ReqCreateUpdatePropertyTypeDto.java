@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class ReqCreateUpdatePropertyType {
+public class ReqCreateUpdatePropertyTypeDto {
     @NotBlank(message = "Property type detail cannot be null")
     private String detail;
 }
