@@ -1,0 +1,428 @@
+@startuml "sea-salt"
+
+
+' Init Entities
+entity "Genders" as genders{
+    *id : UUID <<PK>>
+    --
+    detail : varchar(50) notnull unique
+}
+
+entity "Roles" as roles {
+    *id : UUID <<PK>>
+    --
+    detail : varchar(50) notnull unique
+}
+
+entity "TransactionTypes" as transactionTypes {
+    *id : UUID <<PK>>
+    --
+    detail : varchar(50) notnull unique
+}
+
+entity "FileTypes" as fileTypes {
+    *id : UUID <<PK>>
+    --
+    detail : varchar(50) notnull unique
+    ' default: image, pdf, other
+    
+}
+
+' index
+' unique constraint
+
+' Entity Definitions
+
+
+
+
+' -- Users Entity
+entity "Users" as users {
+  *id : UUID <<PK>>
+  --
+  email : varchar(255) <<unique>> notnull
+  password : varchar() not null
+  username: varchar(50) not null unique
+  first_name: varchar(50) not null
+  last_name: varchar(50) not null
+  gender: UUID
+  role: UUID
+  created_at: timestamp not null
+  updated_at: timestamp not null
+}
+' users relationship
+users }o--|| genders : has
+users }o--|| roles : has
+
+
+
+' -- contact entity section
+
+'-- contact type
+entity "ContactTypes" as contactTypes {
+    *id : UUID <<PK>>
+    --
+    detail : varchar(50) not null unique
+    created_by: UUID
+    created_at: timestamp not null
+    updated_at: timestamp not null
+    ' unique constraint (detail, created_by)
+    ' index (created_by)
+}
+contactTypes }o--|| users : created by
+
+'-- contact
+entity "Contacts" as contacts {
+    *id : UUID <<PK>>
+    --
+    business_name : varchar(100) not null
+    internal_name : varchar(100) 
+    detail : varchar(255) 
+    note : varchar(255) 
+    contact_type: UUID not null
+    address : varchar(255) 
+    phone : varchar(50) 
+    mobile_phone : varchar(50) 
+    line : varchar(50) 
+    email : varchar(255) 
+    created_by: UUID
+    created_at: timestamp not null
+    updated_at: timestamp not null 
+    ' unique constraint (business_name, created_by)
+    ' index (created_by)
+    ' index (contact_type)
+}
+contacts }o--|| contactTypes : has
+contacts }o--|| users : created by
+
+' -- File Entity
+entity "FileDetails" as filesDetails {
+    *id : UUID <<PK>>
+    --
+    name : varchar(100) not null
+    object_key : varchar(255) not null
+    path : varchar(255) not null
+    type: UUID not null
+    size: bigint not null
+    created_by: UUID
+    created_at: timestamp not null
+    updated_at: timestamp not null
+    ' unique constraint (name, created_by)
+    ' index (created_by)
+}
+filesDetails }o--|| fileTypes : has
+filesDetails }o--|| users : created by
+
+
+' -- property entity section
+
+entity "PropertyStatuses" as propertyStatuses{
+    *id : UUID <<PK>>
+    --
+    detail : varchar(50) not null unique
+    created_by: UUID
+    created_at: timestamp not null
+    updated_at: timestamp not null
+    ' unique constraint (detail, created_by)
+    ' index (created_by)
+}
+propertyStatuses }o--|| users : created by
+
+' -- property type
+entity "PropertyTypes" as propertyTypes {
+  *id : UUID <<PK>>
+  --
+  detail : varchar(50) not null unique
+  created_by: UUID
+  created_at: timestamp not null
+  updated_at: timestamp not null
+  ' unique constraint (detail, created_by)
+  ' index (created_by)
+}
+propertyTypes }o--|| users : created by
+
+' -- property
+entity "Properties" as properties {
+    *id : UUID <<PK>>
+    --
+    name : varchar(100) not null
+    description : varchar(255)
+    specific : varchar(255)
+    hilight : varchar(50)
+    area : varchar(50)
+    price : decimal(10,2)
+    f_s_p : decimal(10,2)
+    status: UUID not null
+    owner_by : UUID not null
+    map_url : varchar(255)
+    lat : varchar(50)
+    lng : varchar(50)
+    sold : boolean not null default false
+    created_by: UUID
+    created_at: timestamp not null
+    updated_at: timestamp not null
+    ' unique constraint (name, created_by)
+    ' index (created_by)
+    ' index (status)
+    ' index (owner_by)
+}
+properties }o--|| propertyStatuses : has
+properties }o--|| propertyTypes : has
+properties }o--|| contacts : owner by
+
+' property relation table
+entity "PropertyPropertyTypes" as propertyPropertyTypes {
+    *id : UUID <<PK>>
+    --
+    property: UUID not null
+    property_type: UUID not null
+    created_by: UUID
+    created_at: timestamp not null
+    ' unique constraint (property, property_type, created_by)
+    ' index (created_by)
+}
+propertyPropertyTypes }o--|| properties : has
+propertyPropertyTypes }o--|| propertyTypes : has
+propertyPropertyTypes }o--|| users : created by
+
+entity "PropertyFileDetails" as propertyFileDetails {
+    *id : UUID <<PK>>
+    --
+    property: UUID not null
+    file: UUID not null
+    created_by: UUID
+    created_at: timestamp not null
+    updated_at: timestamp not null
+    ' unique constraint (property, file, created_by)
+    ' index (created_by)
+}
+propertyFileDetails }o--|| properties : has
+propertyFileDetails }o--|| filesDetails : has
+propertyFileDetails }o--|| users : created by
+
+
+' -- expense section
+entity "ExpenseTypes" as expenseTypes {
+    *id : UUID <<PK>>
+    --
+    detail : varchar(50) not null unique
+    created_by: UUID
+    created_at: timestamp not null
+    updated_at: timestamp not null
+    ' unique constraint (detail, created_by)
+    ' index (created_by)
+    ' ondelete RESTRICT
+    ' onupdate CASCADE
+}
+expenseTypes }o--|| users : created by
+
+entity "Expenses" as expenses {
+    *id : UUID <<PK>>
+    --
+    detail : varchar(255) not null
+    expense_type: UUID not null
+    created_by: UUID not null
+    created_at: timestamp not null
+    updated_at: timestamp not null
+    ' unique constraint (name, created_by, expense_type)
+    ' index (created_by)
+    ' index (expense_type)
+}
+expenses }o--|| expenseTypes : has
+expenses }o--|| users : created by
+
+' -- memo section
+entity "MemoTypes" as memoTypes {
+    *id : UUID <<PK>>
+    --
+    detail : varchar(50) not null unique
+    created_by: UUID
+    created_at: timestamp not null
+    updated_at: timestamp not null
+    ' unique constraint (detail, created_by)
+    ' index (created_by)
+}
+memoTypes }o--|| users : created by
+
+entity "Memos" as memos {
+    *id : UUID <<PK>>
+    --
+    name : varchar(100) not null
+    detail : varchar(255)
+    memo_type: UUID not null
+    created_by: UUID
+    created_at: timestamp not null
+    updated_at: timestamp not null
+    ' unique constraint (name, created_by)
+    ' index (created_by)
+    ' index (memo_type)
+}
+memos }o--|| memoTypes : has
+memos }o--|| users : created by
+
+' -- memo file relation
+entity "MemoFileDetails" as memoFileDetails {
+    *id : UUID <<PK>>
+    --
+    memo: UUID not null
+    file: UUID not null
+    created_by: UUID
+    created_at: timestamp not null
+    ' unique constraint (memo, file, created_by)
+    ' index (created_by)
+}
+memoFileDetails }o--|| memos : has
+memoFileDetails }o--|| filesDetails : has
+memoFileDetails }o--|| users : created by
+
+' -- transaction section
+entity "Transactions" as transactions {
+    *id : UUID <<PK>>
+    --
+    note : varchar(255) note null
+    transaction_type: UUID not null
+    created_by: UUID
+    created_at: timestamp not null
+    updated_at: timestamp not null
+    ' index (created_by)
+}
+transactions }o--|| transactionTypes : has
+transactions }o--|| users : created by
+
+' -- sale transaction section
+entity "SaleTransactions" as saleTransactions {
+    *id : UUID <<PK>>
+    --
+    transaction: UUID not null
+    property: UUID not null
+    contact: UUID not null
+    note: varchar(255) not null
+    price: decimal(10,2) not null
+    created_by: UUID
+    created_at: timestamp not null
+    updated_at: timestamp not null
+    ' unique constraint (property, transaction, created_by)
+    ' index (created_by)
+}
+saleTransactions }o--|| transactions : has
+saleTransactions }o--|| properties : has
+saleTransactions }o--|| contacts : has
+saleTransactions }o--|| users : created by
+
+entity "SaleTransactionFileDetails" as saleTransactionFileDetails {
+    *id : UUID <<PK>>
+    --
+    sale_transaction: UUID not null
+    file: UUID not null
+    created_by: UUID
+    created_at: timestamp not null
+    updated_at: timestamp not null
+    ' unique constraint (sale_transaction, file, created_by)
+    ' index (created_by)
+}
+saleTransactionFileDetails }o--|| saleTransactions : has
+saleTransactionFileDetails }o--|| filesDetails : has
+saleTransactionFileDetails }o--|| users : created by
+
+
+' -- invest transaaction section
+entity "InvestTransactions" as investTransactions {
+    *id : UUID <<PK>>
+    --
+    transaction: UUID not null
+    note: varchar(255) not null
+    property: UUID not null
+    created_by: UUID
+    created_at: timestamp not null
+    updated_at: timestamp not null
+    ' index (created_by)
+}
+investTransactions }o--|| transactions : has
+investTransactions }o--|| users : created by
+investTransactions }o--|| properties : has
+
+entity "InvestTransactionItems" as investTransactionItems {
+    *id : UUID <<PK>>
+    --
+    invest_transaction: UUID not null
+    contact: UUID not null
+    price: decimal(10,2) not null
+    created_by: UUID
+    created_at: timestamp not null
+    updated_at: timestamp not null
+    ' index (invest_transaction)
+    ' index (created_by)
+}
+investTransactionItems }o--|| investTransactions : has
+investTransactionItems }o--|| contacts : has
+investTransactionItems }o--|| users : created by
+
+' -- invest transaction file relation
+entity "InvestTransactionFileDetails" as investTransactionFileDetails {
+    *id : UUID <<PK>>
+    --
+    invest_transaction: UUID not null
+    file: UUID not null
+    created_by: UUID
+    created_at: timestamp not null
+    updated_at: timestamp not null
+    ' unique constraint (invest_transaction, file, created_by)
+    ' index (created_by)
+}
+investTransactionFileDetails }o--|| investTransactions : has
+investTransactionFileDetails }o--|| filesDetails : has
+investTransactionFileDetails }o--|| users : created by
+
+
+' -- payment section
+entity "PaymentTransactions" as paymentTransactions {
+    *id : UUID <<PK>>
+    --
+    transaction: UUID not null
+    note: varchar(255) not null
+    property: UUID not null
+    contact: UUID not null
+    created_by: UUID
+    created_at: timestamp not null
+    updated_at: timestamp not null
+    ' index (created_by)
+}
+paymentTransactions }o--|| transactions : has
+paymentTransactions }o--|| properties : has
+paymentTransactions }o--|| contacts : has
+paymentTransactions }o--|| users : created by
+
+
+entity "PaymentTransactionItems" as paymentTransactionItems {
+    *id : UUID <<PK>>
+    --
+    payment_transaction: UUID not null
+    expense: UUID not null
+    amount : decimal(10,2) not null
+    price: decimal(10,2) not null
+    created_by: UUID
+    created_at: timestamp not null
+    updated_at: timestamp not null
+    ' index (payment_transaction)
+    ' index (created_by)
+}
+paymentTransactionItems }o--|| paymentTransactions : has
+paymentTransactionItems }o--|| expenses : has
+paymentTransactionItems }o--|| users : created by
+
+entity "PaymentTransactionFileDetails" as paymentTransactionFileDetails {
+    *id : UUID <<PK>>
+    --
+    payment_transaction: UUID not null
+    file: UUID not null
+    created_by: UUID not null
+    created_at: timestamp not null
+    updated_at: timestamp not null
+    ' index (created_by)
+}
+paymentTransactionFileDetails }o--|| paymentTransactions : has
+paymentTransactionFileDetails }o--|| filesDetails : has
+paymentTransactionFileDetails }o--|| users : created by
+
+
+@enduml

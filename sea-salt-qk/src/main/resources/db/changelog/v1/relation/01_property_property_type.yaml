@@ -1,0 +1,63 @@
+databaseChangeLog:
+- preConditions:
+    - runningAs:
+        username:  sea_salt_user
+
+- changeSet:
+    id: create-property-property-types-table
+    author: otterdev
+    comment: Create property_property_types junction table
+    changes:
+      - createTable:
+          tableName: property_property_types
+          columns:
+            - column:
+                name: id
+                type: UUID
+                constraints:
+                  primaryKey: true
+                  nullable: false
+            - column:
+                name: property
+                type: UUID
+                constraints:
+                  nullable: false
+                  foreignKeyName: fk_property_property_types_property
+                  references: properties(id)
+                  deleteCascade: false
+                  updateCascade: true
+            - column:
+                name: property_type
+                type: UUID
+                constraints:
+                  nullable: false
+                  foreignKeyName: fk_property_property_types_type
+                  references: property_types(id)
+                  deleteCascade: false
+                  updateCascade: true
+            - column:
+                name: created_by
+                type: UUID
+                constraints:
+                  nullable: false
+                  foreignKeyName: fk_property_property_types_created_by
+                  references: users(id)
+                  deleteCascade: false
+                  updateCascade: true
+            - column:
+                name: created_at
+                type: timestamp
+                constraints:
+                  nullable: false
+
+      - addUniqueConstraint:
+          tableName: property_property_types
+          columnNames: property, property_type, created_by
+          constraintName: uq_property_property_types_relation
+
+      - createIndex:
+          tableName: property_property_types
+          indexName: idx_property_property_types_created_by
+          columns:
+            - column:
+                name: created_by

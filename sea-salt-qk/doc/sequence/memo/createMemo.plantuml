@@ -1,0 +1,65 @@
+@startuml "new memo"
+actor Client
+participant MemoController
+participant MemoService
+participant MemoRepository
+participant FileUserRepository
+participant FileDetailRepository
+participant MemoFileRepository
+participant CloudflareService
+participant "Database" as DB
+
+' Request flow
+Client -> MemoController: POST /memos\n(ReqCreateUpdateMemoDto, files)
+activate MemoController
+
+MemoController -> MemoService: newMemo(dto, files, userId)
+activate MemoService
+
+' Create and save memo
+MemoService -> MemoRepository: persist(memo)
+activate MemoRepository
+MemoRepository -> DB: INSERT memo
+DB --> MemoRepository: memo
+MemoRepository --> MemoService: Either<RepositoryError, Memo>
+deactivate MemoRepository
+
+' Handle file uploads
+loop for each file in files
+    MemoService -> CloudflareService: saveFile(file)
+    activate CloudflareService
+    CloudflareService --> MemoService: Either<RepositoryError,CFR2Dto>
+    deactivate CloudflareService
+
+    ' Create FileDetail
+    MemoService -> FileDetailRepository: persist(fileDetail)
+    activate FileDetailRepository
+    FileDetailRepository -> DB: INSERT file_detail
+    DB --> FileDetailRepository: fileDetail
+    FileDetailRepository --> MemoService: Either<RepositoryError, fileDetail>
+    deactivate FileDetailRepository
+
+    ' Create FileUser relation
+    MemoService -> FileUserRepository: persist(fileUser)
+    activate FileUserRepository
+    FileUserRepository -> DB: INSERT file_user
+    DB --> FileUserRepository: fileUser
+    FileUserRepository --> MemoService: Either<RepositoryError, fileUser>
+    deactivate FileUserRepository
+
+    ' Create MemoFile relation
+    MemoService -> MemoFileRepository: persist(memoFile)
+    activate MemoFileRepository
+    MemoFileRepository -> DB: INSERT memo_file
+    DB --> MemoFileRepository: memoFile
+    MemoFileRepository --> MemoService: Either<RepositoryError, memoFile>
+    deactivate MemoFileRepository
+end
+
+MemoService --> MemoController: Either<ServiceError, Memo>
+deactivate MemoService
+
+MemoController --> Client: HTTP Response\n(201 Created or 400 Bad Request)
+deactivate MemoController
+
+@enduml

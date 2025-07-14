@@ -1,0 +1,68 @@
+databaseChangeLog:
+  - preConditions:
+      - runningAs:
+          username: sea_salt_user
+
+  - changeSet:
+      id: create-property-file-details-table
+      author: otterdev
+      comment: Create property_file_details junction table
+      changes:
+        - createTable:
+            tableName: property_file_details
+            columns:
+              - column:
+                  name: id
+                  type: UUID
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: property
+                  type: UUID
+                  constraints:
+                    nullable: false
+                    foreignKeyName: fk_property_file_details_property
+                    references: properties(id)
+                    deleteCascade: false
+                    updateCascade: true
+              - column:
+                  name: file
+                  type: UUID
+                  constraints:
+                    nullable: false
+                    foreignKeyName: fk_property_file_details_file
+                    references: file_details(id)
+                    deleteCascade: false
+                    updateCascade: true
+              - column:
+                  name: created_by
+                  type: UUID
+                  constraints:
+                    nullable: false
+                    foreignKeyName: fk_property_file_details_created_by
+                    references: users(id)
+                    deleteCascade: false
+                    updateCascade: true
+              - column:
+                  name: created_at
+                  type: timestamp
+                  constraints:
+                    nullable: false
+              - column:
+                  name: updated_at
+                  type: timestamp
+                  constraints:
+                    nullable: false
+
+        - addUniqueConstraint:
+            tableName: property_file_details
+            columnNames: property, file, created_by
+            constraintName: uq_property_file_details_relation
+
+        - createIndex:
+            tableName: property_file_details
+            indexName: idx_property_file_details_created_by
+            columns:
+              - column:
+                  name: created_by

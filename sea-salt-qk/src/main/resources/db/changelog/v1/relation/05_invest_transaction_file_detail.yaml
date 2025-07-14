@@ -1,0 +1,68 @@
+databaseChangeLog:
+  - preConditions:
+      - runningAs:
+          username: sea_salt_user
+
+  - changeSet:
+      id: create-invest-transaction-file-details-table
+      author: otterdev
+      comment: Create invest_transaction_file_details junction table
+      changes:
+        - createTable:
+            tableName: invest_transaction_file_details
+            columns:
+              - column:
+                  name: id
+                  type: UUID
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: invest_transaction
+                  type: UUID
+                  constraints:
+                    nullable: false
+                    foreignKeyName: fk_invest_transaction_file_details_invest
+                    references: invest_transactions(id)
+                    deleteCascade: false
+                    updateCascade: true
+              - column:
+                  name: file
+                  type: UUID
+                  constraints:
+                    nullable: false
+                    foreignKeyName: fk_invest_transaction_file_details_file
+                    references: file_details(id)
+                    deleteCascade: false
+                    updateCascade: true
+              - column:
+                  name: created_by
+                  type: UUID
+                  constraints:
+                    nullable: false
+                    foreignKeyName: fk_invest_transaction_file_details_created_by
+                    references: users(id)
+                    deleteCascade: false
+                    updateCascade: true
+              - column:
+                  name: created_at
+                  type: timestamp
+                  constraints:
+                    nullable: false
+              - column:
+                  name: updated_at
+                  type: timestamp
+                  constraints:
+                    nullable: false
+
+        - addUniqueConstraint:
+            tableName: invest_transaction_file_details
+            columnNames: invest_transaction, file, created_by
+            constraintName: uq_invest_transaction_file_details_relation
+
+        - createIndex:
+            tableName: invest_transaction_file_details
+            indexName: idx_invest_transaction_file_details_created_by
+            columns:
+              - column:
+                  name: created_by

@@ -110,6 +110,11 @@
             <artifactId>lombok</artifactId>
             <version>1.18.38</version>
         </dependency>
+        <dependency>
+            <groupId>org.yaml</groupId>
+            <artifactId>snakeyaml</artifactId>
+            <version>2.4</version>
+        </dependency>
     </dependencies>
 
     <build>
@@ -171,7 +176,7 @@
 				<artifactId>liquibase-maven-plugin</artifactId>
 				<version>4.31.1</version>
 				<configuration>
-					<changeLogFile>src/main/resources/db/changelog/changelog-master.xml</changeLogFile>
+					<changeLogFile>src/main/resources/db/changelog/changelog-master.yaml</changeLogFile>
 					<url>jdbc:postgresql://localhost:7777/spring-sea-salt</url>
 					<username>sea_salt_user</username>
 					<password>sea_salt_password</password>

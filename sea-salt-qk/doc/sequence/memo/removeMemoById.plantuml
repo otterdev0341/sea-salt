@@ -1,0 +1,85 @@
+@startuml "delete memo by id"
+actor Client
+participant MemoController
+participant MemoService
+participant MemoRepository
+participant FileUserRepository
+participant FileDetailRepository
+participant MemoFileRepository
+participant CloudflareService
+participant "Database" as DB
+
+' Request flow
+Client -> MemoController: DELETE /memos/{id}
+activate MemoController
+
+MemoController -> MemoService: deleteMemoById(memoId, userId)
+activate MemoService
+
+' Find memo
+MemoService -> MemoRepository: findById(memoId)
+activate MemoRepository
+MemoRepository -> DB: SELECT * FROM memo WHERE id = ?
+DB --> MemoRepository: Optional<Memo>
+MemoRepository --> MemoService: Either<RepositoryError, Optional<Memo>>
+deactivate MemoRepository
+
+alt Memo found
+    ' Get memo files
+    MemoService -> MemoFileRepository: findByMemoId(memoId)
+    activate MemoFileRepository
+    MemoFileRepository -> DB: SELECT * FROM memo_file WHERE memo_id = ?
+    DB --> MemoFileRepository: List<MemoFile>
+    MemoFileRepository --> MemoService: Either<RepositoryError, List<MemoFile>>
+    deactivate MemoFileRepository
+
+    loop for each memoFile
+        ' Delete file relations
+        MemoService -> FileUserRepository: deleteByFileId(fileId)
+        activate FileUserRepository
+        FileUserRepository -> DB: DELETE FROM file_user WHERE file_id = ?
+        DB --> FileUserRepository: void
+        FileUserRepository --> MemoService: Either<RepositoryError, Void>
+        deactivate FileUserRepository
+
+        ' Delete file from Cloudflare
+        MemoService -> CloudflareService: deleteFile(objectKey)
+        activate CloudflareService
+        CloudflareService --> MemoService: Either<RepositoryError, Void>
+        deactivate CloudflareService
+
+        ' Delete memo file relation
+        MemoService -> MemoFileRepository: deleteByFileId(fileId)
+        activate MemoFileRepository
+        MemoFileRepository -> DB: DELETE FROM memo_file WHERE file_id = ?
+        DB --> MemoFileRepository: void
+        MemoFileRepository --> MemoService: Either<RepositoryError, Void>
+        deactivate MemoFileRepository
+
+        ' Delete file detail
+        MemoService -> FileDetailRepository: deleteById(fileId)
+        activate FileDetailRepository
+        FileDetailRepository -> DB: DELETE FROM file_detail WHERE id = ?
+        DB --> FileDetailRepository: void
+        FileDetailRepository --> MemoService: Either<RepositoryError, Void>
+        deactivate FileDetailRepository
+    end
+
+    ' Finally delete memo
+    MemoService -> MemoRepository: deleteById(memoId)
+    activate MemoRepository
+    MemoRepository -> DB: DELETE FROM memo WHERE id = ?
+    DB --> MemoRepository: void
+    MemoRepository --> MemoService: Either<RepositoryError, Void>
+    deactivate MemoRepository
+
+    MemoService --> MemoController: Either<ServiceError, Void>
+else Memo not found
+    MemoService --> MemoController: Either<ServiceError, ResourceNotFoundError>
+end
+
+MemoController --> Client: HTTP Response\n(204 No Content or 404 Not Found)
+deactivate MemoService
+deactivate MemoController
+
+@enduml

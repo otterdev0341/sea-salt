@@ -1,0 +1,63 @@
+databaseChangeLog:
+  - preConditions:
+      - runningAs:
+          username: sea_salt_user
+
+  - changeSet:
+      id: create-memo-file-details-table
+      author: otterdev
+      comment: Create memo_file_details junction table
+      changes:
+        - createTable:
+            tableName: memo_file_details
+            columns:
+              - column:
+                  name: id
+                  type: UUID
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: memo
+                  type: UUID
+                  constraints:
+                    nullable: false
+                    foreignKeyName: fk_memo_file_details_memo
+                    references: memos(id)
+                    deleteCascade: false
+                    updateCascade: true
+              - column:
+                  name: file
+                  type: UUID
+                  constraints:
+                    nullable: false
+                    foreignKeyName: fk_memo_file_details_file
+                    references: file_details(id)
+                    deleteCascade: false
+                    updateCascade: true
+              - column:
+                  name: created_by
+                  type: UUID
+                  constraints:
+                    nullable: false
+                    foreignKeyName: fk_memo_file_details_created_by
+                    references: users(id)
+                    deleteCascade: false
+                    updateCascade: true
+              - column:
+                  name: created_at
+                  type: timestamp
+                  constraints:
+                    nullable: false
+
+        - addUniqueConstraint:
+            tableName: memo_file_details
+            columnNames: memo, file, created_by
+            constraintName: uq_memo_file_details_relation
+
+        - createIndex:
+            tableName: memo_file_details
+            indexName: idx_memo_file_details_created_by
+            columns:
+              - column:
+                  name: created_by

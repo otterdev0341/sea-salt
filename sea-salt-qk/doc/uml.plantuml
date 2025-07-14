@@ -1,0 +1,25 @@
+@startuml "sea-salt"
+
+' Define class User
+class User {
+  +String name
+  +String email
+  +login()
+}
+
+' Define interface
+interface PanacheRepository<T> {
+
+    
+}
+
+' Define class Admin
+class Admin {
+  +banUser(user: User)
+}
+
+' Relationships
+User <|-- Admin         
+Admin ..|> PanacheRepository  
+
+@enduml

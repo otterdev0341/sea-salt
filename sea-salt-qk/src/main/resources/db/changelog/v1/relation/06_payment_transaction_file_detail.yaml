@@ -1,0 +1,63 @@
+databaseChangeLog:
+  - preConditions:
+      - runningAs:
+          username: sea_salt_user
+
+  - changeSet:
+      id: create-payment-transaction-file-details-table
+      author: otterdev
+      comment: Create payment_transaction_file_details junction table
+      changes:
+        - createTable:
+            tableName: payment_transaction_file_details
+            columns:
+              - column:
+                  name: id
+                  type: UUID
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: payment_transaction
+                  type: UUID
+                  constraints:
+                    nullable: false
+                    foreignKeyName: fk_payment_transaction_file_details_payment
+                    references: payment_transactions(id)
+                    deleteCascade: false
+                    updateCascade: true
+              - column:
+                  name: file
+                  type: UUID
+                  constraints:
+                    nullable: false
+                    foreignKeyName: fk_payment_transaction_file_details_file
+                    references: file_details(id)
+                    deleteCascade: false
+                    updateCascade: true
+              - column:
+                  name: created_by
+                  type: UUID
+                  constraints:
+                    nullable: false
+                    foreignKeyName: fk_payment_transaction_file_details_created_by
+                    references: users(id)
+                    deleteCascade: false
+                    updateCascade: true
+              - column:
+                  name: created_at
+                  type: timestamp
+                  constraints:
+                    nullable: false
+              - column:
+                  name: updated_at
+                  type: timestamp
+                  constraints:
+                    nullable: false
+
+        - createIndex:
+            tableName: payment_transaction_file_details
+            indexName: idx_payment_transaction_file_details_created_by
+            columns:
+              - column:
+                  name: created_by

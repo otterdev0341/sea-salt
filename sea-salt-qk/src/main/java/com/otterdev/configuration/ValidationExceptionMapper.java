@@ -2,7 +2,7 @@ package com.otterdev.configuration;
 
 import java.util.stream.Collectors;
 
-import com.otterdev.dto.helper.response.ErrorResponse;
+import com.otterdev.domain.valueObject.helper.response.ErrorResponse;
 
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;

@@ -1,0 +1,61 @@
+@startuml "view all memo"
+actor Client
+participant MemoController
+participant MemoService
+participant MemoRepository
+participant FileUserRepository
+participant FileDetailRepository
+participant MemoFileRepository
+participant CloudflareService
+participant "Database" as DB
+
+' Request flow
+Client -> MemoController: GET /memos
+activate MemoController
+
+MemoController -> MemoService: viewAllMemo(userId)
+activate MemoService
+
+' Find all memos
+MemoService -> MemoRepository: findByUserId(userId)
+activate MemoRepository
+MemoRepository -> DB: SELECT * FROM memo WHERE created_by = ?
+DB --> MemoRepository: List<Memo>
+MemoRepository --> MemoService: Either<RepositoryError, List<Memo>>
+deactivate MemoRepository
+
+loop for each memo in memos
+    ' Find memo files
+    MemoService -> MemoFileRepository: findByMemoId(memo.id)
+    activate MemoFileRepository
+    MemoFileRepository -> DB: SELECT * FROM memo_file WHERE memo_id = ?
+    DB --> MemoFileRepository: List<MemoFile>
+    MemoFileRepository --> MemoService: Either<RepositoryError, List<MemoFile>>
+    deactivate MemoFileRepository
+
+    loop for each memoFile
+        ' Get file details
+        MemoService -> FileDetailRepository: findById(memoFile.fileId)
+        activate FileDetailRepository
+        FileDetailRepository -> DB: SELECT * FROM file_detail WHERE id = ?
+        DB --> FileDetailRepository: Optional<FileDetail>
+        FileDetailRepository --> MemoService: Either<RepositoryError, Optional<FileDetail>>
+        deactivate FileDetailRepository
+
+        ' Verify file access
+        MemoService -> FileUserRepository: findByFileIdAndUserId(fileId, userId)
+        activate FileUserRepository
+        FileUserRepository -> DB: SELECT * FROM file_user WHERE file_id = ? AND user_id = ?
+        DB --> FileUserRepository: Optional<FileUser>
+        FileUserRepository --> MemoService: Either<RepositoryError, Optional<FileUser>>
+        deactivate FileUserRepository
+    end
+end
+
+MemoService --> MemoController: Either<ServiceError, List<ResMemoDto>>
+deactivate MemoService
+
+MemoController --> Client: HTTP Response\n(200 OK with memo list or 404 Not Found)
+deactivate MemoController
+
+@enduml
