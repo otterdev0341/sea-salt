@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 public class ResFileR2Dto {
     private String objectKey;
     private String fileUrl;
+    private String fileName;
     private String contentType;
     private Long contentLength;
 }

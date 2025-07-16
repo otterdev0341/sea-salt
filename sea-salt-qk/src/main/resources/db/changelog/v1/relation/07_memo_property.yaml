@@ -1,0 +1,68 @@
+databaseChangeLog:
+  - preConditions:
+      - runningAs:
+          username: sea_salt_user
+
+  - changeSet:
+      id: A
+      author: otterdev
+      comment: Create memo_property junction table
+      changes:
+        - createTable:
+            tableName: memo_property
+            columns:
+              - column:
+                  name: id
+                  type: UUID
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: memo
+                  type: UUID
+                  constraints:
+                    nullable: false
+                    foreignKeyName: fk_memo_property_memo
+                    references: memos(id)
+                    deleteCascade: false
+                    updateCascade: true
+              - column:
+                  name: property
+                  type: UUID
+                  constraints:
+                    nullable: false
+                    foreignKeyName: fk_memo_property_property
+                    references: properties(id)
+                    deleteCascade: false
+                    updateCascade: true
+              - column:
+                  name: created_by
+                  type: UUID
+                  constraints:
+                    nullable: false
+                    foreignKeyName: fk_memo_property_created_by
+                    references: users(id)
+                    deleteCascade: false
+                    updateCascade: true
+              - column:
+                  name: created_at
+                  type: timestamp
+                  constraints:
+                    nullable: false
+              - column:
+                  name: updated_at
+                  type: timestamp
+                  constraints:
+                    nullable: false
+
+        - addUniqueConstraint:
+            tableName: memo_property
+            columnNames: memo, property, created_by
+            constraintName: uq_memo_property_relation
+
+        - createIndex:
+            tableName: memo_property
+            indexName: idx_memo_property_created_by
+            columns:
+              - column:
+                  name: created_by

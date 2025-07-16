@@ -275,6 +275,20 @@ memoFileDetails }o--|| memos : has
 memoFileDetails }o--|| filesDetails : has
 memoFileDetails }o--|| users : created by
 
+' -- memo property
+entity "MemoProperty" as memoProperty {
+    *id : UUID <<PK>>
+    --
+    memo: UUID not null
+    property: UUID not null
+    created_by: UUID
+    created_at: timestamp not null
+    updated_at: timestamp not null
+    ' unique constraint (memo, property, created_by)
+    ' index (created_by)
+}
+
+
 ' -- transaction section
 entity "Transactions" as transactions {
     *id : UUID <<PK>>

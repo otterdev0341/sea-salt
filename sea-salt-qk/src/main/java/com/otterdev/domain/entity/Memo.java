@@ -6,6 +6,7 @@ import java.util.Set;
 import java.util.UUID;
 
 import com.otterdev.domain.entity.relation.MemoFileDetail;
+import com.otterdev.domain.entity.relation.MemoProperty;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -95,4 +96,7 @@ public class Memo {
     // relation
     @OneToMany(mappedBy = "memo")
     private Set<MemoFileDetail> fileDetails = new HashSet<>();
+
+    @OneToMany(mappedBy = "memo")
+    private Set<MemoProperty> properties = new HashSet<>();
 }

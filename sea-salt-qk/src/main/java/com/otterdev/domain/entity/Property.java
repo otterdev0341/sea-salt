@@ -6,6 +6,8 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
+import com.otterdev.domain.entity.relation.MemoProperty;
+import com.otterdev.domain.entity.relation.PropertyFileDetail;
 import com.otterdev.domain.entity.relation.PropertyPropertyType;
 
 import jakarta.persistence.Column;
@@ -91,7 +93,7 @@ public class Property {
                 "ON DELETE RESTRICT ON UPDATE CASCADE"
         )
     )
-    private ProjectStatus status;
+    private PropertyStatus status;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(
@@ -141,5 +143,12 @@ public class Property {
     // relation table
     @OneToMany(mappedBy = "property")
     private Set<PropertyPropertyType> propertyTypes = new HashSet<>();
+
+    @OneToMany(mappedBy = "property")
+    private Set<MemoProperty> memos = new HashSet<>();
+
+    @OneToMany(mappedBy = "property")
+    private Set<PropertyFileDetail> fileDetails = new HashSet<>();
+
 
 }

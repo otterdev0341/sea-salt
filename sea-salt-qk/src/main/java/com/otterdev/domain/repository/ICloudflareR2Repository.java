@@ -8,7 +8,7 @@ import java.util.Optional;
 import org.jboss.resteasy.reactive.multipart.FileUpload;
 
 import com.otterdev.domain.valueObject.cloudflare.ResFileR2Dto;
-import com.otterdev.utility.error.repository.RepositoryError;
+import com.otterdev.error_structure.RepositoryError;
 import com.spencerwi.either.Either;
 import io.smallrye.mutiny.Uni;
 
