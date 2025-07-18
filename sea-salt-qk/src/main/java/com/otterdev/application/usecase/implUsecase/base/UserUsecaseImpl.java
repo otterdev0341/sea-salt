@@ -113,7 +113,7 @@ class UserUsecaseImpl implements InternalUserUsecase {
     @Override
     public Uni<Either<UsecaseError, User>> getMe(UUID userId) {
         // Call the user service to get the current user's information
-        return userService.getMe(userId.toString())
+        return userService.getMe(userId)
             .onItem().transform(either -> either.fold(
                 serviceError -> {
                     UsecaseError usecaseError = new UsecaseError.NotFound(serviceError.message());

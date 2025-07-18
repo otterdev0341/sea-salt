@@ -1,12 +1,7 @@
 package com.otterdev.domain.valueObject.dto.user;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.UUID;
-
 import com.fasterxml.jackson.annotation.JsonFormat;
-
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -37,10 +32,10 @@ public class ReqCreateUserDto {
     @NotBlank(message = "Gender is required")
     private String gender;
 
-    // // @JsonFormat(shape = JsonFormat.Shape.STRING)
-    // @JsonFormat(pattern = "yyyy-MM-dd", shape = JsonFormat.Shape.STRING)
-    // @NotNull(message = "Date of birth is required")
-    // private LocalDateTime dob;
+    
+    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss", shape = JsonFormat.Shape.STRING)
+    @NotNull(message = "Date of birth is required")
+    private LocalDateTime dob;
 
 
 }

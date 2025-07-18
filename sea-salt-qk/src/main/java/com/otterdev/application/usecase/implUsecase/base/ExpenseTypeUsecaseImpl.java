@@ -31,33 +31,53 @@ class ExpenseTypeUsecaseImpl implements InternalExpenseTypeUsecase {
     @Override
     public Uni<Either<UsecaseError, ExpenseType>> createExpenseType(ReqCreateExpenseTypeDto reqCreateExpenseTypeDto,
             UUID userId) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'createExpenseType'");
+        
+        return expenseTypeService.createExpenseType(reqCreateExpenseTypeDto, userId)
+                .chain(result -> result.fold(
+                    error -> Uni.createFrom().item(Either.left(new UsecaseError.BusinessError("Failed to create expense type cause by : " + error.message()))), 
+                    success -> Uni.createFrom().item(Either.right(success))
+                ));
     }
 
     @Override
     public Uni<Either<UsecaseError, ExpenseType>> updateExpenseType(ReqUpdateExpenseTypeDto reqUpdateExpenseTypeDto,
             UUID expenseTypeId, UUID userId) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'updateExpenseType'");
+        
+                return expenseTypeService.updateExpenseType(reqUpdateExpenseTypeDto, expenseTypeId, userId)
+                .chain(result -> result.fold(
+                    error -> Uni.createFrom().item(Either.left(new UsecaseError.BusinessError("Failed to update expense type cause by : " + error.message()))), 
+                    success -> Uni.createFrom().item(Either.right(success))
+                ));
     }
 
     @Override
     public Uni<Either<UsecaseError, Boolean>> deleteExpenseType(UUID expenseTypeId, UUID userId) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'deleteExpenseType'");
+        
+        return expenseTypeService.deleteExpenseType(expenseTypeId, userId)
+                .chain(result -> result.fold(
+                    error -> Uni.createFrom().item(Either.left(new UsecaseError.BusinessError("Failed to delete expense type cause by : " + error.message()))), 
+                    success -> Uni.createFrom().item(Either.right(success))
+                ));
     }
 
     @Override
     public Uni<Either<UsecaseError, ExpenseType>> getExpenseTypeById(UUID expenseTypeId, UUID userId) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getExpenseTypeById'");
+        
+        return expenseTypeService.getExpenseTypeById(expenseTypeId, userId)
+                .chain(result -> result.fold(
+                    error -> Uni.createFrom().item(Either.left(new UsecaseError.BusinessError("Failed to retrieve expense type cause by : " + error.message()))), 
+                    success -> Uni.createFrom().item(Either.right(success))
+                ));
     }
 
     @Override
     public Uni<Either<UsecaseError, List<ExpenseType>>> getAllExpenseTypes(UUID userId) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getAllExpenseTypes'");
+        
+        return expenseTypeService.getAllExpenseTypes(userId)
+                .chain(result -> result.fold(
+                    error -> Uni.createFrom().item(Either.left(new UsecaseError.BusinessError("Failed to retrieve expense types cause by : " + error.message()))), 
+                    success -> Uni.createFrom().item(Either.right(success))
+                ));
     }
     
 }

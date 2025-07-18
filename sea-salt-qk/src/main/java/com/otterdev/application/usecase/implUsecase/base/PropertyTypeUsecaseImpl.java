@@ -1,5 +1,6 @@
 package com.otterdev.application.usecase.implUsecase.base;
 
+import java.util.List;
 import java.util.UUID;
 
 import com.otterdev.application.usecase.internal.base.InternalPropertyTypeUsecase;
@@ -28,33 +29,53 @@ class PropertyTypeUsecaseImpl implements InternalPropertyTypeUsecase {
     @Override
     public Uni<Either<UsecaseError, PropertyType>> createPropertyType(ReqCreatePropertyTypeDto reqCreatePropertyTypeDto,
             UUID userId) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'createPropertyType'");
+        
+                return propertyTypeService.createPropertyType(reqCreatePropertyTypeDto, userId)
+                .chain(result -> result.fold(
+                    error -> Uni.createFrom().item(Either.left(new UsecaseError.BusinessError("Failed to create property type cause by : " + error.message()))), 
+                    success -> Uni.createFrom().item(Either.right(success))
+                ));
     }
 
     @Override
     public Uni<Either<UsecaseError, PropertyType>> updatePropertyType(UUID propertyTypeId,
             ReqUpdatePropertyTypeDto reqUpdatePropertyTypeDto, UUID userId) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'updatePropertyType'");
+        
+        return propertyTypeService.updatePropertyType(propertyTypeId, reqUpdatePropertyTypeDto, userId)
+                .chain(result -> result.fold(
+                    error -> Uni.createFrom().item(Either.left(new UsecaseError.BusinessError("Failed to update property type cause by : " + error.message()))), 
+                    success -> Uni.createFrom().item(Either.right(success))
+                ));
     }
 
     @Override
     public Uni<Either<UsecaseError, Void>> deletePropertyType(UUID propertyTypeId, UUID userId) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'deletePropertyType'");
+        
+        return propertyTypeService.deletePropertyType(propertyTypeId, userId)
+                .chain(result -> result.fold(
+                    error -> Uni.createFrom().item(Either.left(new UsecaseError.BusinessError("Failed to delete property type cause by : " + error.message()))), 
+                    success -> Uni.createFrom().item(Either.right(success))
+                ));
     }
 
     @Override
     public Uni<Either<UsecaseError, PropertyType>> getPropertyTypeById(UUID propertyTypeId, UUID userId) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getPropertyTypeById'");
+        
+        return propertyTypeService.getPropertyTypeById(propertyTypeId, userId)
+                .chain(result -> result.fold(
+                    error -> Uni.createFrom().item(Either.left(new UsecaseError.BusinessError("Failed to retrieve property type cause by : " + error.message()))), 
+                    success -> Uni.createFrom().item(Either.right(success))
+                ));
     }
 
     @Override
-    public Uni<Either<UsecaseError, PropertyType>> getAllPropertyType(UUID userId) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getAllPropertyType'");
+    public Uni<Either<UsecaseError, List<PropertyType>>> getAllPropertyType(UUID userId) {
+        
+        return propertyTypeService.getAllPropertyType(userId)
+                .chain(result -> result.fold(
+                    error -> Uni.createFrom().item(Either.left(new UsecaseError.BusinessError("Failed to retrieve contact types cause by : " + error.message()))), 
+                    success -> Uni.createFrom().item(Either.right(success))
+                ));
     }
 
 

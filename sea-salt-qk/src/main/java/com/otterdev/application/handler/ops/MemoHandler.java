@@ -81,7 +81,7 @@ public class MemoHandler {
 
     
     // 2 update memo
-    @PUT
+    @PUT()
     @Path("/{memoId}")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)

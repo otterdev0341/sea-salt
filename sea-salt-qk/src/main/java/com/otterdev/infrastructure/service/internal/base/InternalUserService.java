@@ -40,5 +40,5 @@ public interface InternalUserService {
     Uni<Either<ServiceError, Boolean>> changeUserInfo(ReqChangeUserInfoDto changeUserInfoDto, UUID userId);
 
     @WithSession
-    Uni<Either<ServiceError, User>> getMe(String userId); 
+    Uni<Either<ServiceError, User>> getMe(UUID userId); 
 }

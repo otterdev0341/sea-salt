@@ -3,6 +3,11 @@ package com.otterdev.application.handler.feature;
 import java.util.Optional;
 import java.util.UUID;
 
+import org.eclipse.microprofile.openapi.annotations.enums.SecuritySchemeType;
+import org.eclipse.microprofile.openapi.annotations.security.SecurityRequirement;
+import org.eclipse.microprofile.openapi.annotations.security.SecurityScheme;
+import org.eclipse.microprofile.openapi.annotations.security.SecuritySchemes;
+
 import com.otterdev.application.usecase.internal.base.InternalExpenseTypeUsecase;
 import com.otterdev.domain.valueObject.dto.expenseType.ReqCreateExpenseTypeDto;
 import com.otterdev.domain.valueObject.dto.expenseType.ReqUpdateExpenseTypeDto;
@@ -24,8 +29,17 @@ import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 
-@ApplicationScoped
 @Path("/expense-types")
+@SecuritySchemes(value = {
+    @SecurityScheme(
+        securitySchemeName = "jwt",
+        type = SecuritySchemeType.HTTP,
+        scheme = "bearer",
+        bearerFormat = "JWT"
+    )
+})
+@SecurityRequirement(name = "jwt")
+@ApplicationScoped
 public class ExpenseTypeHandler {
     
     private final InternalExpenseTypeUsecase expenseTypeUsecase;

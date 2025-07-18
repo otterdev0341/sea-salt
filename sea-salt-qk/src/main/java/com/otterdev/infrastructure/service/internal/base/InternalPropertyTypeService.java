@@ -1,5 +1,6 @@
 package com.otterdev.infrastructure.service.internal.base;
 
+import java.util.List;
 import java.util.UUID;
 
 import com.otterdev.domain.entity.PropertyType;
@@ -26,9 +27,9 @@ public interface InternalPropertyTypeService {
     Uni<Either<ServiceError, Void>> deletePropertyType(UUID propertyTypeId, UUID userId);
 
     @WithSession
-    Uni<Either<ServiceError, PropertyType>> getPropertyTypeById(UUID propertyTypeId);
+    Uni<Either<ServiceError, PropertyType>> getPropertyTypeById(UUID propertyTypeId, UUID userId);
 
     @WithSession
-    Uni<Either<ServiceError, PropertyType>> getPropertyTypeByDetail(String detail);
+    Uni<Either<ServiceError, List<PropertyType>>> getAllPropertyType(UUID userId);
 
 }

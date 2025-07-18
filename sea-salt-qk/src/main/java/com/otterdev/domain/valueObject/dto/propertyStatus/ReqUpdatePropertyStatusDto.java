@@ -10,5 +10,5 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class ReqUpdatePropertyStatusDto {
     @NotBlank(message = "Property status to update cannot be blank")
-    private String propertyStatus;
+    private String detail;
 }

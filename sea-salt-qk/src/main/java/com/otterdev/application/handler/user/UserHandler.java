@@ -3,6 +3,11 @@ package com.otterdev.application.handler.user;
 import java.util.Optional;
 import java.util.UUID;
 
+import org.eclipse.microprofile.openapi.annotations.enums.SecuritySchemeType;
+import org.eclipse.microprofile.openapi.annotations.security.SecurityRequirement;
+import org.eclipse.microprofile.openapi.annotations.security.SecurityScheme;
+import org.eclipse.microprofile.openapi.annotations.security.SecuritySchemes;
+
 import com.otterdev.application.usecase.internal.base.InternalUserUsecase;
 import com.otterdev.domain.valueObject.dto.user.ReqChangeEmailDto;
 import com.otterdev.domain.valueObject.dto.user.ReqChangePasswordDto;
@@ -26,7 +31,18 @@ import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 
+
+
+
 @Path("/user")
+@SecuritySchemes(value = {
+    @SecurityScheme(
+        securitySchemeName = "jwt",
+        type = SecuritySchemeType.HTTP,
+        scheme = "bearer",
+        bearerFormat = "JWT"
+    )
+})
 @ApplicationScoped
 public class UserHandler {
     
@@ -72,6 +88,7 @@ public class UserHandler {
     @POST
     @Path("/change-password")
     @RolesAllowed("user")
+    @SecurityRequirement(name = "jwt")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Uni<Response> changePassword(@Valid ReqChangePasswordDto reqChangePasswordDto) {
@@ -116,6 +133,7 @@ public class UserHandler {
     @POST
     @Path("/change-username")
     @RolesAllowed("user")
+    @SecurityRequirement(name = "jwt")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Uni<Response> changeUsername(@Valid ReqChangeUsernameDto reqChangeUsernameDto) {
@@ -161,6 +179,7 @@ public class UserHandler {
     @POST
     @Path("/change-email")
     @RolesAllowed("user")
+    @SecurityRequirement(name = "jwt")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Uni<Response> changeEmail(@Valid ReqChangeEmailDto reqChangeEmailDto) {
@@ -205,6 +224,7 @@ public class UserHandler {
     @POST
     @Path("/change-userinfo")
     @RolesAllowed("user")
+    @SecurityRequirement(name = "jwt")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Uni<Response> changeUserInfo(@Valid ReqChangeUserInfoDto reqChangeUserInfoDto) {
@@ -248,6 +268,7 @@ public class UserHandler {
     // get me
     @POST
     @Path("/me")
+    @SecurityRequirement(name = "jwt")
     @RolesAllowed("user")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON) // This is not necessary for GET requests, but included

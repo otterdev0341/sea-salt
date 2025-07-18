@@ -1,8 +1,9 @@
 package com.otterdev.domain.entity;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.UUID;
+
+import jakarta.persistence.Basic;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -28,7 +29,7 @@ public class User {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    @JsonIgnore
+    @Basic(fetch = FetchType.EAGER)
     @Column(name= "email", nullable = false, unique = true)
     private String email;
 
@@ -39,15 +40,15 @@ public class User {
     @Column(name= "username")
     private String username;
 
-    @JsonIgnore
+
     @Column(name= "first_name")
     private String firstName;
 
-    @JsonIgnore
+    
     @Column(name= "last_name")
     private String lastName;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(
         name = "gender",
         referencedColumnName = "id",
@@ -60,11 +61,10 @@ public class User {
     )
     private Gender gender;  
 
-    @JsonIgnore
     @Column(name= "dob")
     private LocalDateTime dob;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(
         name = "role",
         referencedColumnName = "id",

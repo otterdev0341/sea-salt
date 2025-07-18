@@ -1,12 +1,8 @@
 package com.otterdev.infrastructure.service.implService.base;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
-
 import org.mindrot.jbcrypt.BCrypt;
 
 import com.otterdev.domain.entity.Gender;
@@ -28,9 +24,9 @@ import com.otterdev.infrastructure.service.config.JwtService;
 import com.otterdev.infrastructure.service.internal.base.InternalUserService;
 import com.spencerwi.either.Either;
 
+import io.quarkus.hibernate.reactive.panache.common.WithSession;
 import io.quarkus.hibernate.reactive.panache.common.WithTransaction;
 import io.smallrye.mutiny.Uni;
-import io.smallrye.mutiny.infrastructure.Infrastructure;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
@@ -73,7 +69,7 @@ public Uni<Either<ServiceError, User>> register(ReqCreateUserDto userDto) {
     newUser.setUsername(userDto.getUsername().trim());
     newUser.setFirstName(userDto.getFirstName().trim());
     newUser.setLastName(userDto.getLastName().trim());
-    newUser.setDob(now);
+    newUser.setDob(userDto.getDob());
     newUser.setCreatedAt(now);
     newUser.setUpdatedAt(now);
     // Start reactive chain on event loop
@@ -162,33 +158,131 @@ public Uni<Either<ServiceError, User>> register(ReqCreateUserDto userDto) {
     }
 
     @Override
+    @WithTransaction
     public Uni<Either<ServiceError, Boolean>> changePassword(ReqChangePasswordDto changePasswordDto, UUID userId) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'changePassword'");
+        
+        return userRepository.findByUserId(userId)
+                .chain(userOps -> {
+                    if (userOps.isEmpty()) {
+                        return Uni.createFrom().item(
+                            Either.left(new ServiceError.NotFound("User not found with ID: " + userId))
+                        );
+                    }
+
+                    User user = (User)userOps.get();
+                    // Verify old password
+                    if (!BCrypt.checkpw(changePasswordDto.getOldPassword().trim(), user.getPassword())) {
+                        return Uni.createFrom().item(
+                            Either.left(new ServiceError.ValidationFailed("Invalid old password"))
+                        );
+                    }
+
+                    // Hash new password
+                    String hashedNewPassword = BCrypt.hashpw(changePasswordDto.getNewPassword().trim(), BCrypt.gensalt(12));
+                    user.setPassword(hashedNewPassword);
+                    user.setUpdatedAt(LocalDateTime.now());
+
+                    return userRepository.persist(user)
+                        .map(persisted -> Either.<ServiceError, Boolean>right(true));
+                });
     }
 
     @Override
+    @WithTransaction
     public Uni<Either<ServiceError, Boolean>> changeEmail(ReqChangeEmailDto changeEmailDto, UUID userId) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'changeEmail'");
+        
+        return userRepository.existsByEmail(changeEmailDto.getNewEmail().trim())
+            .chain(exists -> {
+                if (exists) {
+                    return Uni.createFrom().item(
+                        Either.left(new ServiceError.ValidationFailed("Email already exists"))
+                    );
+                }
+                return userRepository.findByUserId(userId)
+                    .chain(userOps -> {
+                        if (userOps.isEmpty()) {
+                            return Uni.createFrom().item(
+                                Either.left(new ServiceError.NotFound("User not found with ID: " + userId))
+                            );
+                        }
+                        User user = (User)userOps.get();
+                        user.setEmail(changeEmailDto.getNewEmail().trim());
+                        user.setUpdatedAt(LocalDateTime.now());
+                        return userRepository.persist(user)
+                            .map(persisted -> Either.<ServiceError, Boolean>right(true));
+                    });
+            });
     }
 
     @Override
+    @WithTransaction
     public Uni<Either<ServiceError, Boolean>> changeUsername(ReqChangeUsernameDto changeUsernameDto, UUID userId) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'changeUsername'");
+        
+        return userRepository.existsByUsername(changeUsernameDto.getNewUsername().trim())
+            .chain(exists -> {
+                if (exists) {
+                    return Uni.createFrom().item(
+                        Either.left(new ServiceError.ValidationFailed("Username already exists"))
+                    );
+                }
+                return userRepository.findByUserId(userId)
+                    .chain(userOps -> {
+                        if (userOps.isEmpty()) {
+                            return Uni.createFrom().item(
+                                Either.left(new ServiceError.NotFound("User not found with ID: " + userId))
+                            );
+                        }
+                        User user = (User)userOps.get();
+                        user.setUsername(changeUsernameDto.getNewUsername().trim());
+                        user.setUpdatedAt(LocalDateTime.now());
+                        return userRepository.persist(user)
+                            .map(persisted -> Either.<ServiceError, Boolean>right(true));
+                    });
+            });
     }
 
     @Override
+    @WithTransaction
     public Uni<Either<ServiceError, Boolean>> changeUserInfo(ReqChangeUserInfoDto changeUserInfoDto, UUID userId) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'changeUserInfo'");
+        
+        return genderRepository.findBydetail(changeUserInfoDto.getGender())
+            .chain(genderOpt -> {
+                if (genderOpt.isEmpty()) {
+                    return Uni.createFrom().item(
+                        Either.left(new ServiceError.NotFound("Gender not found value : " + changeUserInfoDto.getGender()))
+                    );
+                }
+                return userRepository.findByUserId(userId)
+                    .chain(userOps -> {
+                        if (userOps.isEmpty()) {
+                            return Uni.createFrom().item(
+                                Either.left(new ServiceError.NotFound("User not found with ID: " + userId))
+                            );
+                        }
+                        User user = (User)userOps.get();
+                        Gender gender = (Gender)genderOpt.get();
+                        user.setFirstName(changeUserInfoDto.getFirstName().trim());
+                        user.setLastName(changeUserInfoDto.getLastName().trim());
+                        user.setDob(changeUserInfoDto.getDob());
+                        user.setGender(gender);
+                        user.setUpdatedAt(LocalDateTime.now());
+                        return userRepository.persist(user)
+                            .map(persisted -> Either.<ServiceError, Boolean>right(true));
+            });
+            });
     }
 
     @Override
-    public Uni<Either<ServiceError, User>> getMe(String userId) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getMe'");
+    @WithSession
+    public Uni<Either<ServiceError, User>> getMe(UUID userId) {
+        
+        return userRepository.findByUserId(userId)
+            .map(userOpt -> {
+                if (userOpt.isEmpty()) {
+                    return Either.<ServiceError, User>left(new ServiceError.NotFound("User not found with ID: " + userId));
+                }
+                return Either.<ServiceError, User>right(userOpt.get());
+            });
     }
 
     

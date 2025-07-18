@@ -11,25 +11,28 @@ import com.spencerwi.either.Either;
 
 import io.quarkus.hibernate.reactive.panache.common.WithSession;
 import io.quarkus.hibernate.reactive.panache.common.WithTransaction;
+import io.smallrye.mutiny.Uni;
 import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Named;
 
 @ApplicationScoped
+@Named("propertyStatusService")
 public interface InternalPropertyStatusService {
     
     
     @WithTransaction
-    Either<ServiceError, PropertyStatus> createPropertyStatus(ReqCreatePropertyStatusDto reqCreatePropertyStatus, UUID userId);
+    Uni<Either<ServiceError, PropertyStatus>> createPropertyStatus(ReqCreatePropertyStatusDto reqCreatePropertyStatus, UUID userId);
 
     @WithTransaction
-    Either<ServiceError, PropertyStatus> updatePropertyStatus(ReqUpdatePropertyStatusDto reqUpdatePropertyStatus, UUID propertyStatusId ,UUID userId);
+    Uni<Either<ServiceError, PropertyStatus>> updatePropertyStatus(ReqUpdatePropertyStatusDto reqUpdatePropertyStatus, UUID propertyStatusId ,UUID userId);
 
     @WithTransaction
-    Either<ServiceError, Boolean> deletePropertyStatus(UUID propertyStatusId, UUID userId);
+    Uni<Either<ServiceError, Boolean>> deletePropertyStatus(UUID propertyStatusId, UUID userId);
 
     @WithSession
-    Either<ServiceError, PropertyStatus> getPropertyStatusById(UUID propertyStatusId, UUID userId);
+    Uni<Either<ServiceError, PropertyStatus>> getPropertyStatusById(UUID propertyStatusId, UUID userId);
 
     @WithSession
-    Either<ServiceError, List<PropertyStatus>> getAllPropertyStatuses(UUID userId);
+    Uni<Either<ServiceError, List<PropertyStatus>>> getAllPropertyStatuses(UUID userId);
 
 }

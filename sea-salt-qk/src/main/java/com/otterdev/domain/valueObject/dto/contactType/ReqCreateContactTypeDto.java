@@ -10,5 +10,5 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class ReqCreateContactTypeDto {
     @NotBlank(message = "Contact type cannot be blank")
-    private String contactType;
+    private String detail;
 }

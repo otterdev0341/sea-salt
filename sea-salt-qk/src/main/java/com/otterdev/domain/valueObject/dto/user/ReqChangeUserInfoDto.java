@@ -1,7 +1,7 @@
 package com.otterdev.domain.valueObject.dto.user;
 
-import java.util.UUID;
-
+import java.time.LocalDateTime;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -19,12 +19,12 @@ public class ReqChangeUserInfoDto {
     @NotBlank(message = "last name is required")
     private String lastName;
 
+    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss", shape = JsonFormat.Shape.STRING)
     @NotBlank(message = "date of birth is required")
-    private String dob;
+    private LocalDateTime dob;
 
     @NotBlank(message = "gender is required")
-    private UUID gender;
+    private String gender;
 
-    @NotBlank(message = "Password is required")
-    private String password;
+    
 }

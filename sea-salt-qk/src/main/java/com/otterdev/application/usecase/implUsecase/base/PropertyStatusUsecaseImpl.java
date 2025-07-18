@@ -28,34 +28,69 @@ class PropertyStatusUsecaseImpl implements InternalPropertyStatusUsecase {
 
     @Override
     public Uni<Either<UsecaseError, PropertyStatus>> createPropertyStatus(
-            ReqCreatePropertyStatusDto reqCreatePropertyStatus, UUID userId) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'createPropertyStatus'");
+            ReqCreatePropertyStatusDto reqCreatePropertyStatus, 
+            UUID userId) {
+        
+        return propertyStatusService.createPropertyStatus(reqCreatePropertyStatus, userId)
+            .chain(result -> {
+                if (result.isLeft()) {
+                    return Uni.createFrom().item(Either.left(new UsecaseError.BusinessError(
+                        "Failed to create property status cause by : " + result.getLeft().message()
+                    )));
+                }
+                return Uni.createFrom().item(Either.right(result.getRight()));
+            });
+        
+                
     }
 
     @Override
     public Uni<Either<UsecaseError, PropertyStatus>> updatePropertyStatus(
             ReqUpdatePropertyStatusDto reqUpdatePropertyStatus, UUID propertyStatusId, UUID userId) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'updatePropertyStatus'");
+        
+        return propertyStatusService.updatePropertyStatus(reqUpdatePropertyStatus, propertyStatusId, userId)
+            .chain(result -> result.fold(
+                error -> Uni.createFrom().item(Either.left(new UsecaseError.BusinessError(
+                    "Failed to update property status cause by : " + error.message()
+                ))), 
+                success -> Uni.createFrom().item(Either.right(success))
+            ));
     }
 
     @Override
     public Uni<Either<UsecaseError, Boolean>> deletePropertyStatus(UUID propertyStatusId, UUID userId) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'deletePropertyStatus'");
+        
+        return propertyStatusService.deletePropertyStatus(propertyStatusId, userId)
+            .chain(result -> result.fold(
+                error -> Uni.createFrom().item(Either.left(new UsecaseError.BusinessError(
+                    "Failed to delete property status cause by : " + error.message()
+                ))), 
+                success -> Uni.createFrom().item(Either.right(success))
+            ));
     }
 
     @Override
     public Uni<Either<UsecaseError, PropertyStatus>> getPropertyStatusById(UUID propertyStatusId, UUID userId) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getPropertyStatusById'");
+        
+        return propertyStatusService.getPropertyStatusById(propertyStatusId, userId)
+            .chain(result -> result.fold(
+                error -> Uni.createFrom().item(Either.left(new UsecaseError.BusinessError(
+                    "Failed to retrieve property status cause by : " + error.message()
+                ))), 
+                success -> Uni.createFrom().item(Either.right(success))
+            ));
     }
 
     @Override
     public Uni<Either<UsecaseError, List<PropertyStatus>>> getAllPropertyStatuses(UUID userId) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getAllPropertyStatuses'");
+        
+        return propertyStatusService.getAllPropertyStatuses(userId)
+            .chain(result -> result.fold(
+                error -> Uni.createFrom().item(Either.left(new UsecaseError.BusinessError(
+                    "Failed to retrieve property statuses cause by : " + error.message()
+                ))), 
+                success -> Uni.createFrom().item(Either.right(success))
+            ));
     }
 
 

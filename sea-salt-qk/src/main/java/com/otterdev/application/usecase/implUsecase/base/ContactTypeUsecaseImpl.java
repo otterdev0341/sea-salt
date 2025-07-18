@@ -29,34 +29,53 @@ class ContactTypeUsecaseImpl implements InternalContactTypeUsecase {
     @Override
     public Uni<Either<UsecaseError, ContactType>> createContactType(ReqCreateContactTypeDto reqCreateContactTypeDto,
             UUID userId) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'createContactType'");
         
+        return contactTypeService.createContactType(reqCreateContactTypeDto, userId)
+                .chain(result -> result.fold(
+                    error -> Uni.createFrom().item(Either.left(new UsecaseError.BusinessError("Failed to create contact type cause by : " + error.message()))), 
+                    success -> Uni.createFrom().item(Either.right(result.getRight()))
+                ));
     }
 
     @Override
     public Uni<Either<UsecaseError, ContactType>> updateContactType(ReqUpdateContactTypeDto reqUpdateContactTypeDto,
             UUID contactTypeId, UUID userId) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'updateContactType'");
+
+        return contactTypeService.updateContactType(reqUpdateContactTypeDto, contactTypeId, userId)
+                .chain(result -> result.fold(
+                    error -> Uni.createFrom().item(Either.left(new UsecaseError.BusinessError("Failed to update contact type cause by : " + error.message()))), 
+                    success -> Uni.createFrom().item(Either.right(result.getRight()))
+                ));
     }
 
     @Override
     public Uni<Either<UsecaseError, Boolean>> deleteContactType(UUID contactTypeId, UUID userId) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'deleteContactType'");
+        
+        return contactTypeService.deleteContactType(contactTypeId, userId)
+                .chain(result -> result.fold(
+                    error -> Uni.createFrom().item(Either.left(new UsecaseError.BusinessError("Failed to delete contact type cause by : " + error.message()))), 
+                    success -> Uni.createFrom().item(Either.right(success))
+                ));
     }
 
     @Override
     public Uni<Either<UsecaseError, ContactType>> getContactTypeById(UUID contactTypeId, UUID userId) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getContactTypeById'");
+        
+        return contactTypeService.getContactTypeById(contactTypeId, userId)
+                .chain(result -> result.fold(
+                    error -> Uni.createFrom().item(Either.left(new UsecaseError.BusinessError("Failed to retrieve contact type cause by : " + error.message()))), 
+                    success -> Uni.createFrom().item(Either.right(success))
+                ));
     }
 
     @Override
     public Uni<Either<UsecaseError, List<ContactType>>> getAllContactTypes(UUID userId) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getAllContactTypes'");
+        
+        return contactTypeService.getAllContactTypes(userId)
+                .chain(result -> result.fold(
+                    error -> Uni.createFrom().item(Either.left(new UsecaseError.BusinessError("Failed to retrieve contact types cause by : " + error.message()))), 
+                    success -> Uni.createFrom().item(Either.right(success))
+                ));
     }
 
    

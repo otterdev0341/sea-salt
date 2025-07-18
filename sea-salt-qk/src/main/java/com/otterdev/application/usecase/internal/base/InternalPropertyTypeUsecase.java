@@ -1,5 +1,6 @@
 package com.otterdev.application.usecase.internal.base;
 
+import java.util.List;
 import java.util.UUID;
 
 import com.otterdev.domain.entity.PropertyType;
@@ -29,6 +30,6 @@ public interface InternalPropertyTypeUsecase {
     Uni<Either<UsecaseError, PropertyType>> getPropertyTypeById(UUID propertyTypeId, UUID userId);
 
     @WithSession
-    Uni<Either<UsecaseError, PropertyType>> getAllPropertyType(UUID userId);
+    Uni<Either<UsecaseError, List<PropertyType>>> getAllPropertyType(UUID userId);
 
 }

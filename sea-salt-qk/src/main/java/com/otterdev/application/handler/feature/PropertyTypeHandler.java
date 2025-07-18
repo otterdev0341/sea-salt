@@ -3,6 +3,11 @@ package com.otterdev.application.handler.feature;
 import java.util.Optional;
 import java.util.UUID;
 
+import org.eclipse.microprofile.openapi.annotations.enums.SecuritySchemeType;
+import org.eclipse.microprofile.openapi.annotations.security.SecurityRequirement;
+import org.eclipse.microprofile.openapi.annotations.security.SecurityScheme;
+import org.eclipse.microprofile.openapi.annotations.security.SecuritySchemes;
+
 import com.otterdev.application.usecase.internal.base.InternalPropertyTypeUsecase;
 import com.otterdev.domain.valueObject.dto.propertyType.ReqCreatePropertyTypeDto;
 import com.otterdev.domain.valueObject.dto.propertyType.ReqUpdatePropertyTypeDto;
@@ -25,8 +30,17 @@ import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 
-@ApplicationScoped
 @Path("/property-types")
+@SecuritySchemes(value = {
+    @SecurityScheme(
+        securitySchemeName = "jwt",
+        type = SecuritySchemeType.HTTP,
+        scheme = "bearer",
+        bearerFormat = "JWT"
+    )
+})
+@SecurityRequirement(name = "jwt")
+@ApplicationScoped
 public class PropertyTypeHandler {
     
     private final InternalPropertyTypeUsecase propertyTypeUsecase;

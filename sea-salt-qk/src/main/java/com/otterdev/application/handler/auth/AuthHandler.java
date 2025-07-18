@@ -1,5 +1,9 @@
 package com.otterdev.application.handler.auth;
 
+import org.eclipse.microprofile.openapi.annotations.enums.SecuritySchemeType;
+import org.eclipse.microprofile.openapi.annotations.security.SecurityScheme;
+import org.eclipse.microprofile.openapi.annotations.security.SecuritySchemes;
+
 import com.otterdev.application.usecase.internal.base.InternalUserUsecase;
 import com.otterdev.domain.valueObject.dto.user.ReqLoginDto;
 import com.otterdev.domain.valueObject.helper.response.ErrorResponse;
@@ -18,6 +22,14 @@ import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 
 @Path("/auth")
+@SecuritySchemes(value = {
+    @SecurityScheme(
+        securitySchemeName = "jwt",
+        type = SecuritySchemeType.HTTP,
+        scheme = "bearer",
+        bearerFormat = "JWT"
+    )
+})
 @ApplicationScoped
 public class AuthHandler {
     
