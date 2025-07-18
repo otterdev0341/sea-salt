@@ -1,5 +1,7 @@
 package com.otterdev.infrastructure.service.internal.base;
 
+import java.util.UUID;
+
 import com.otterdev.domain.entity.User;
 import com.otterdev.domain.valueObject.dto.token.ResUserTokenDto;
 import com.otterdev.domain.valueObject.dto.user.ReqChangeEmailDto;
@@ -26,16 +28,16 @@ public interface InternalUserService {
     Uni<Either<ServiceError, ResUserTokenDto>> login(ReqLoginDto loginDto);
 
     @WithTransaction
-    Uni<Either<ServiceError, Void>> changePassword(ReqChangePasswordDto changePasswordDto);
+    Uni<Either<ServiceError, Boolean>> changePassword(ReqChangePasswordDto changePasswordDto, UUID userId);
 
     @WithTransaction
-    Uni<Either<ServiceError, Void>> changeEmail(ReqChangeEmailDto changeEmailDto);
+    Uni<Either<ServiceError, Boolean>> changeEmail(ReqChangeEmailDto changeEmailDto, UUID userId);
 
     @WithTransaction
-    Uni<Either<ServiceError, Void>> changeUsername(ReqChangeUsernameDto changeUsernameDto);
+    Uni<Either<ServiceError, Boolean>> changeUsername(ReqChangeUsernameDto changeUsernameDto, UUID userId);
 
     @WithTransaction
-    Uni<Either<ServiceError, Void>> changeUserInfo(ReqChangeUserInfoDto changeUserInfoDto);
+    Uni<Either<ServiceError, Boolean>> changeUserInfo(ReqChangeUserInfoDto changeUserInfoDto, UUID userId);
 
     @WithSession
     Uni<Either<ServiceError, User>> getMe(String userId); 

@@ -12,10 +12,13 @@ import com.otterdev.infrastructure.service.internal.base.InternalMemoTypeService
 import com.spencerwi.either.Either;
 
 import io.smallrye.mutiny.Uni;
+import io.vertx.core.cli.annotations.Name;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
+import jakarta.inject.Named;
 
 @ApplicationScoped
+@Named("memoTypeService")  // Add this qualifier
 class MemoTypeServiceImpl implements InternalMemoTypeService {
 
     private final MemoTypeRepository memoTypeRepository;

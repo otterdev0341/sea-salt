@@ -13,6 +13,7 @@ import com.otterdev.infrastructure.service.config.JwtService;
 import io.smallrye.mutiny.Uni;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
+import jakarta.validation.Valid;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.DELETE;
 import jakarta.ws.rs.GET;
@@ -38,7 +39,7 @@ public class MemoTypeHandler {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Uni<Response> createMemoType(ReqCreateMemoTypeDto reqCreateMemoTypeDto) {
+    public Uni<Response> createMemoType(@Valid ReqCreateMemoTypeDto reqCreateMemoTypeDto) {
         Optional<UUID> userIdOpt = jwtService.getCurrentUserId();
         
         if (userIdOpt.isEmpty()) {
@@ -76,7 +77,7 @@ public class MemoTypeHandler {
     @Path("/{memoTypeId}")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Uni<Response> updateMemoType(UUID memoTypeId, ReqUpdateMemoTypeDto reqUpdateMemoTypeDto) {
+    public Uni<Response> updateMemoType(UUID memoTypeId, @Valid ReqUpdateMemoTypeDto reqUpdateMemoTypeDto) {
         Optional<UUID> userIdOpt = jwtService.getCurrentUserId();
         
         if (userIdOpt.isEmpty()) {

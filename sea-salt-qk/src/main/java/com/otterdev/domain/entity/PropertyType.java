@@ -76,6 +76,4 @@ public class PropertyType {
     @OneToMany(mappedBy = "propertyType")
     private Set<PropertyPropertyType> properties = new HashSet<>();
 
-    @OneToMany(mappedBy = "property")
-    private Set<PropertyFileDetail> fileDetails = new HashSet<>();
 }

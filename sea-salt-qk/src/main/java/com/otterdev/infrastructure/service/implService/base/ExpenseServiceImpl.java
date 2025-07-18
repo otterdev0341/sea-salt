@@ -14,9 +14,11 @@ import com.spencerwi.either.Either;
 import io.smallrye.mutiny.Uni;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
+import jakarta.inject.Named;
 
 
 @ApplicationScoped
+@Named("expenseService")  // Add this qualifier
 class ExpenseServiceImpl implements InternalExpenseService {
 
     private final ExpenseRepository expenseRepository;

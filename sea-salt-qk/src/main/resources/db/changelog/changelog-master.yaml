@@ -6,6 +6,8 @@ databaseChangeLog:
   - include:
       file: db/changelog/v1/sequence/0_initial_entity/transactions_types.yaml
   - include:
+      file: db/changelog/v1/sequence/0_initial_entity/roles.yaml
+  - include:
       file: db/changelog/v1/sequence/1_user/users.yaml
   - include:
       file: db/changelog/v1/sequence/2_contact_type/contact_types.yaml

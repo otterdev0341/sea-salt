@@ -13,8 +13,10 @@ import com.spencerwi.either.Either;
 import io.smallrye.mutiny.Uni;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
+import jakarta.inject.Named;
 
 @ApplicationScoped
+@Named("propertyService")  // Add this qualifier
 class PropertyServiceImpl implements InternalPropertyService {
 
     private final PropertyRepository propertyRepository;

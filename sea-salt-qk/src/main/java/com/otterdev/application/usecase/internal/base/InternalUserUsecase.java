@@ -1,5 +1,7 @@
 package com.otterdev.application.usecase.internal.base;
 
+import java.util.UUID;
+
 import com.otterdev.domain.entity.User;
 import com.otterdev.domain.valueObject.dto.token.ResUserTokenDto;
 import com.otterdev.domain.valueObject.dto.user.ReqChangeEmailDto;
@@ -26,17 +28,17 @@ public interface InternalUserUsecase {
     Uni<Either<UsecaseError, ResUserTokenDto>> login(ReqLoginDto loginDto);
 
     @WithTransaction
-    Uni<Either<UsecaseError, Void>> changePassword(ReqChangePasswordDto changePasswordDto);
+    Uni<Either<UsecaseError, Boolean>> changePassword(ReqChangePasswordDto changePasswordDto, UUID userId);
 
     @WithTransaction
-    Uni<Either<UsecaseError, Void>> changeEmail(ReqChangeEmailDto changeEmailDto);
+    Uni<Either<UsecaseError, Boolean>> changeEmail(ReqChangeEmailDto changeEmailDto, UUID userId);
 
     @WithTransaction
-    Uni<Either<UsecaseError, Void>> changeUsername(ReqChangeUsernameDto changeUsernameDto);
+    Uni<Either<UsecaseError, Boolean>> changeUsername(ReqChangeUsernameDto changeUsernameDto, UUID userId);
 
     @WithTransaction
-    Uni<Either<UsecaseError, Void>> changeUserInfo(ReqChangeUserInfoDto changeUserInfoDto);
+    Uni<Either<UsecaseError, Boolean>> changeUserInfo(ReqChangeUserInfoDto changeUserInfoDto, UUID userId);
 
     @WithSession
-    Uni<Either<UsecaseError, User>> getMe(String userId); 
+    Uni<Either<UsecaseError, User>> getMe(UUID userId); 
 }

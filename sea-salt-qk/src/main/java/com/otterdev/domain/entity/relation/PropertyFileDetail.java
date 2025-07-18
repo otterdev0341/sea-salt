@@ -29,7 +29,7 @@ import lombok.NoArgsConstructor;
     uniqueConstraints = {
         @UniqueConstraint(
             name = "uq_property_file_details_relation",
-            columnNames = {"property", "file", "created_by"}
+            columnNames = {"property_id", "file_id", "created_by"}
         )
     },
     indexes = {
@@ -50,13 +50,11 @@ public class PropertyFileDetail {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(
-        name = "property",
-        referencedColumnName = "id",
-        nullable = false,
+        name = "property_id",
         foreignKey = @ForeignKey(
             name = "fk_property_file_details_property",
             foreignKeyDefinition = 
-                "FOREIGN KEY (property) REFERENCES properties(id) " +
+                "FOREIGN KEY (property_id) REFERENCES properties(id) " +
                 "ON DELETE RESTRICT ON UPDATE CASCADE"
         )
     )
@@ -64,13 +62,11 @@ public class PropertyFileDetail {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(
-        name = "file",
-        referencedColumnName = "id",
-        nullable = false,
+        name = "file_id",
         foreignKey = @ForeignKey(
             name = "fk_property_file_details_file",
             foreignKeyDefinition = 
-                "FOREIGN KEY (file) REFERENCES file_details(id) " +
+                "FOREIGN KEY (file_id) REFERENCES file_details(id) " +
                 "ON DELETE RESTRICT ON UPDATE CASCADE"
         )
     )

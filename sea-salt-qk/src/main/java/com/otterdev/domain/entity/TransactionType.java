@@ -1,17 +1,15 @@
 package com.otterdev.domain.entity;
 
 import java.util.UUID;
-
-import org.hibernate.validator.constraints.UniqueElements;
-
 import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-
+@Entity
 @Data
 @Table(name = "transaction_types")
 @AllArgsConstructor
@@ -22,7 +20,6 @@ public class TransactionType {
     private UUID id;
 
     @Column(name = "detail", unique = true, nullable = false)
-    @UniqueElements
     private String detail;
 
 }

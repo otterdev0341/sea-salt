@@ -55,7 +55,11 @@ databaseChangeLog:
                 type: UUID
                 constraints:
                     nullable: true
-
+            - column:
+                name: dob
+                type: timestamp
+                constraints:
+                    nullable: true
             - column:
                 name: role
                 type: UUID

@@ -3,6 +3,7 @@ package com.otterdev.infrastructure.service.config;
 
 
 import io.smallrye.jwt.build.Jwt;
+import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 import org.eclipse.microprofile.jwt.JsonWebToken;
@@ -12,7 +13,7 @@ import com.otterdev.domain.valueObject.jwt.JwtClaimDto;
 import java.util.Optional;
 import java.util.UUID;
 
-@Singleton
+@ApplicationScoped
 public class JwtService {
     
     @Inject

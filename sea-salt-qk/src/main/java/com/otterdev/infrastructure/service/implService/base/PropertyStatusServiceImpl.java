@@ -12,14 +12,16 @@ import com.spencerwi.either.Either;
 
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
+import jakarta.inject.Named;
 
 @ApplicationScoped
-class PropertyStatusImpl implements InternalPropertyStatusService {
+@Named("propertyStatusService")  // Add this qualifier
+class PropertyStatusServiceImpl implements InternalPropertyStatusService {
 
-    private final PropertyStatusRepositoryImpl propertyStatusRepository;
+    private final PropertyStatusServiceImpl propertyStatusRepository;
 
     @Inject
-    public PropertyStatusImpl(PropertyStatusRepositoryImpl propertyStatusRepository) {
+    public PropertyStatusServiceImpl(PropertyStatusServiceImpl propertyStatusRepository) {
         this.propertyStatusRepository = propertyStatusRepository;
     }
 

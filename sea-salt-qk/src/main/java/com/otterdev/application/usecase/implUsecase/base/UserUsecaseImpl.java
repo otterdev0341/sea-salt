@@ -1,5 +1,7 @@
 package com.otterdev.application.usecase.implUsecase.base;
 
+import java.util.UUID;
+
 import com.otterdev.application.usecase.internal.base.InternalUserUsecase;
 import com.otterdev.domain.entity.User;
 import com.otterdev.domain.valueObject.dto.token.ResUserTokenDto;
@@ -27,48 +29,102 @@ class UserUsecaseImpl implements InternalUserUsecase {
         this.userService = userService;
     }
 
-
     @Override
     public Uni<Either<UsecaseError, User>> register(ReqCreateUserDto userDto) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'register'");
+        // Call the user service to register a new user
+        return userService.register(userDto)
+            .onItem().transform(either -> either.fold(
+                serviceError -> {
+                    UsecaseError usecaseError = new UsecaseError.BusinessError(serviceError.message());
+                    return Either.left(usecaseError);
+                },
+                success -> Either.right(success)
+            ));
+
+            
     }
 
     @Override
     public Uni<Either<UsecaseError, ResUserTokenDto>> login(ReqLoginDto loginDto) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'login'");
+        // Call the user service to log in
+        return userService.login(loginDto)
+            .onItem().transform(either -> either.fold(
+                serviceError -> {
+                    UsecaseError usecaseError = new UsecaseError.Unauthorized(serviceError.message());
+                    return Either.left(usecaseError);
+                },
+                success -> Either.right(success)
+            ));
     }
 
     @Override
-    public Uni<Either<UsecaseError, Void>> changePassword(ReqChangePasswordDto changePasswordDto) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'changePassword'");
+    public Uni<Either<UsecaseError, Boolean>> changePassword(ReqChangePasswordDto changePasswordDto, UUID userId) {
+        // Call the user service to change the password
+        return userService.changePassword(changePasswordDto, userId)
+            .onItem().transform(either -> either.fold(
+                serviceError -> {
+                    UsecaseError usecaseError = new UsecaseError.InvalidRequest(serviceError.message());
+                    return Either.left(usecaseError);
+                },
+                success -> Either.right(success) 
+            ));
     }
 
     @Override
-    public Uni<Either<UsecaseError, Void>> changeEmail(ReqChangeEmailDto changeEmailDto) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'changeEmail'");
+    public Uni<Either<UsecaseError, Boolean>> changeEmail(ReqChangeEmailDto changeEmailDto, UUID userId) {
+        
+        // Call the user service to change the email
+        return userService.changeEmail(changeEmailDto, userId)
+            .onItem().transform(either -> either.fold(
+                serviceError -> {
+                    UsecaseError usecaseError = new UsecaseError.InvalidRequest(serviceError.message());
+                    return Either.left(usecaseError);
+                },
+                success -> Either.right(success) 
+            ));
     }
 
     @Override
-    public Uni<Either<UsecaseError, Void>> changeUsername(ReqChangeUsernameDto changeUsernameDto) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'changeUsername'");
+    public Uni<Either<UsecaseError, Boolean>> changeUsername(ReqChangeUsernameDto changeUsernameDto, UUID userId) {
+        // Call the user service to change the username
+        return userService.changeUsername(changeUsernameDto, userId)
+            .onItem().transform(either -> either.fold(
+                serviceError -> {
+                    UsecaseError usecaseError = new UsecaseError.InvalidRequest(serviceError.message());
+                    return Either.left(usecaseError);
+                },
+                success -> Either.right(success) 
+            ));
     }
 
     @Override
-    public Uni<Either<UsecaseError, Void>> changeUserInfo(ReqChangeUserInfoDto changeUserInfoDto) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'changeUserInfo'");
+    public Uni<Either<UsecaseError, Boolean>> changeUserInfo(ReqChangeUserInfoDto changeUserInfoDto, UUID userId) {
+        // Call the user service to change user info
+        return userService.changeUserInfo(changeUserInfoDto, userId)
+            .onItem().transform(either -> either.fold(
+                serviceError -> {
+                    UsecaseError usecaseError = new UsecaseError.InvalidRequest(serviceError.message());
+                    return Either.left(usecaseError);
+                },
+                success -> Either.right(success) 
+            ));
     }
 
     @Override
-    public Uni<Either<UsecaseError, User>> getMe(String userId) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getMe'");
+    public Uni<Either<UsecaseError, User>> getMe(UUID userId) {
+        // Call the user service to get the current user's information
+        return userService.getMe(userId.toString())
+            .onItem().transform(either -> either.fold(
+                serviceError -> {
+                    UsecaseError usecaseError = new UsecaseError.NotFound(serviceError.message());
+                    return Either.left(usecaseError);
+                },
+                success -> Either.right(success)
+            ));
     }
+
+
+    
     
 
 

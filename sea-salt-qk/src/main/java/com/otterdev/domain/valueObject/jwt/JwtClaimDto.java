@@ -8,5 +8,5 @@ import lombok.Data;
 public class JwtClaimDto {
     private String subject;
     private Set<String> groups;
-    private Long expiresInMillis;
+    private long expiresInMillis;
 }

@@ -2,6 +2,8 @@ package com.otterdev.application.usecase.internal.ops;
 
 import java.util.List;
 import java.util.UUID;
+
+import com.otterdev.application.usecase.internal.support.InternalFileRelateUsecase;
 import com.otterdev.domain.entity.Memo;
 import com.otterdev.domain.valueObject.dto.file.RequestAttachFile;
 import com.otterdev.domain.valueObject.dto.memo.ReqCreateMemoDto;
@@ -15,7 +17,7 @@ import io.smallrye.mutiny.Uni;
 import jakarta.enterprise.context.ApplicationScoped;
 
 @ApplicationScoped
-public interface InternalMemoUsecase {
+public interface InternalMemoUsecase extends InternalFileRelateUsecase {
     
     // common case
     @WithTransaction

@@ -15,8 +15,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name="gender", uniqueConstraints = {
-    @UniqueConstraint(columnNames = {"name"})
+@Table(name="genders", uniqueConstraints = {
+    @UniqueConstraint(columnNames = {"detail"})
 })
 @Data
 @NoArgsConstructor
@@ -28,6 +28,6 @@ public class Gender {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    @Column(name = "name", nullable = false)
-    private String name;
+    @Column(name = "detail", nullable = false)
+    private String detail;
 }

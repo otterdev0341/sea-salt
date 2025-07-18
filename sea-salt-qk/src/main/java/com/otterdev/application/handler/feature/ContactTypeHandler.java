@@ -13,6 +13,7 @@ import com.otterdev.infrastructure.service.config.JwtService;
 import io.smallrye.mutiny.Uni;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
+import jakarta.validation.Valid;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.DELETE;
 import jakarta.ws.rs.GET;
@@ -43,7 +44,7 @@ public class ContactTypeHandler {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Uni<Response> createContactType(ReqCreateContactTypeDto reqCreateContactTypeDto) {
+    public Uni<Response> createContactType(@Valid ReqCreateContactTypeDto reqCreateContactTypeDto) {
         Optional<UUID> userIdOpt = jwtService.getCurrentUserId();
         
         if (userIdOpt.isEmpty()) {
@@ -83,7 +84,7 @@ public class ContactTypeHandler {
     @Path("/{contactTypeId}")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Uni<Response> updateContactType(UUID contactTypeId, ReqUpdateContactTypeDto reqUpdateContactTypeDto) {
+    public Uni<Response> updateContactType(UUID contactTypeId, @Valid ReqUpdateContactTypeDto reqUpdateContactTypeDto) {
         Optional<UUID> userIdOpt = jwtService.getCurrentUserId();
         
         if (userIdOpt.isEmpty()) {

@@ -13,6 +13,7 @@ import com.otterdev.infrastructure.service.config.JwtService;
 import io.smallrye.mutiny.Uni;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
+import jakarta.validation.Valid;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.DELETE;
 import jakarta.ws.rs.GET;
@@ -40,7 +41,7 @@ public class PropertyTypeHandler {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Uni<Response> createPropertyType(ReqCreatePropertyTypeDto dto) {
+    public Uni<Response> createPropertyType(@Valid ReqCreatePropertyTypeDto dto) {
         Optional<UUID> userIdOpt = jwtService.getCurrentUserId();
         
         if (userIdOpt.isEmpty()) {
@@ -80,7 +81,7 @@ public class PropertyTypeHandler {
     @Produces(MediaType.APPLICATION_JSON)
     public Uni<Response> updatePropertyType(
             @PathParam("propertyTypeId") UUID propertyTypeId,
-            ReqUpdatePropertyTypeDto dto) {
+            @Valid ReqUpdatePropertyTypeDto dto) {
         Optional<UUID> userIdOpt = jwtService.getCurrentUserId();
         
         if (userIdOpt.isEmpty()) {

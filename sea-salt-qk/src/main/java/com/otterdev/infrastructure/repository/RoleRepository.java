@@ -1,5 +1,7 @@
 package com.otterdev.infrastructure.repository;
 
+import java.util.Optional;
+
 import com.otterdev.domain.entity.Role;
 
 import io.quarkus.hibernate.reactive.panache.PanacheRepository;
@@ -13,10 +15,18 @@ public class RoleRepository implements PanacheRepository<Role> {
     // For example, you might want to add methods to find roles by name or permissions.
 
     // Example method to find a role by its name
-    public Uni<Role> findByName(String name) {
-        return find("name", name).firstResult();
+    public Uni<Optional<Role>> findByDetail(String detail) {
+        return find("detail", detail.trim())
+                .firstResult()
+                .onItem()
+                .transform(Optional::ofNullable);
+
     }
 
-    // You can also add methods for creating, updating, and deleting roles as needed.
+    public Uni<Role> getUserRole() {
+        return find("detail", "user")
+                .firstResult();
+                
+    }
     
 }

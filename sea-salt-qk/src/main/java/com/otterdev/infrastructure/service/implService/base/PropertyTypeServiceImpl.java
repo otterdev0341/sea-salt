@@ -13,9 +13,11 @@ import com.spencerwi.either.Either;
 import io.smallrye.mutiny.Uni;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
+import jakarta.inject.Named;
 
 
 @ApplicationScoped
+@Named("propertyTypeService")  // Add this qualifier
 class PropertyTypeServiceImpl implements InternalPropertyTypeService{
 
     private final PropertyTypeRepository propertyTypeRepository;
