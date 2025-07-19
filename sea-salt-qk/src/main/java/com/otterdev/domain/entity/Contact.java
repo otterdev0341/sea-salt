@@ -3,6 +3,8 @@ package com.otterdev.domain.entity;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -60,7 +62,8 @@ public class Contact {
     @Column(name = "note", length = 255)
     private String note;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JsonIgnoreProperties({"createdBy", "contact", "createdAt", "updatedAt"})
     @JoinColumn(
         name = "contact_type",
         referencedColumnName = "id",
@@ -89,7 +92,8 @@ public class Contact {
     @Column(name = "email", length = 255)
     private String email;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JsonIgnoreProperties({"password", "contact", "role", "gender", "email","firstName", "lastName", "dob"})
     @JoinColumn(
         name = "created_by",
         referencedColumnName = "id",

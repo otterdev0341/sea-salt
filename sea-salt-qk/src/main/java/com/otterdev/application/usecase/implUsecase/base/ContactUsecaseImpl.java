@@ -9,7 +9,6 @@ import com.otterdev.domain.valueObject.dto.contact.ReqCreateContactDto;
 import com.otterdev.domain.valueObject.dto.contact.ReqUpdateContactDto;
 import com.otterdev.error_structure.UsecaseError;
 import com.otterdev.infrastructure.service.internal.base.InternalContactService;
-import com.otterdev.infrastructure.service.internal.base.InternalContactTypeService;
 import com.spencerwi.either.Either;
 
 import io.smallrye.mutiny.Uni;
@@ -21,50 +20,74 @@ import jakarta.inject.Inject;
 class ContactUsecaseImpl implements InternalContactUsecase {
 
     private final InternalContactService contactService;
-    private final InternalContactTypeService contactTypeService;
+    
 
     @Inject
-    public ContactUsecaseImpl(InternalContactService contactService, InternalContactTypeService contactTypeService) {
+    public ContactUsecaseImpl(InternalContactService contactService) {
         this.contactService = contactService;
-        this.contactTypeService = contactTypeService;
     }
+    
 
 
     @Override
     public Uni<Either<UsecaseError, Contact>> createContact(ReqCreateContactDto reqCreateContactDto, UUID userId) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'createContact'");
+        
+        return contactService.createContact(reqCreateContactDto, userId)
+                .chain(result -> result.fold(
+                    error -> Uni.createFrom().item(Either.left(new UsecaseError.BusinessError("Failed to create contact type cause by : " + error.message()))), 
+                    success -> Uni.createFrom().item(Either.right(result.getRight()))
+                ));
     }
 
     @Override
     public Uni<Either<UsecaseError, Contact>> updateContact(ReqUpdateContactDto reqUpdateContactDto, UUID contactId,
             UUID userId) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'updateContact'");
+        
+        return contactService.updateContact(reqUpdateContactDto, contactId, userId)
+            .chain(result -> result.fold(
+                error -> Uni.createFrom().item(Either.left(new UsecaseError.BusinessError("Failed to update contact type cause by : " + error.message()))), 
+                success -> Uni.createFrom().item(Either.right(result.getRight()))
+            ));
     }
 
     @Override
     public Uni<Either<UsecaseError, Boolean>> deleteContact(UUID contactId, UUID userId) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'deleteContact'");
+        
+        return contactService.deleteContact(contactId, userId)
+                .chain(result -> result.fold(
+                    error -> Uni.createFrom().item(Either.left(new UsecaseError.BusinessError("Failed to delete contact type cause by : " + error.message()))), 
+                    success -> Uni.createFrom().item(Either.right(success))
+                ));
     }
 
     @Override
     public Uni<Either<UsecaseError, Contact>> getContactById(UUID contactId, UUID userId) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getContactById'");
+        
+        return contactService.getContactById(contactId, userId)
+                .chain(result -> result.fold(
+                    error -> Uni.createFrom().item(Either.left(new UsecaseError.BusinessError("Failed to retrieve contact type cause by : " + error.message()))), 
+                    success -> Uni.createFrom().item(Either.right(success))
+                ));
     }
 
     @Override
     public Uni<Either<UsecaseError, List<Contact>>> getAllContacts(UUID userId) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getAllContacts'");
+        
+        return contactService.getAllContacts(userId)
+                .chain(result -> result.fold(
+                    error -> Uni.createFrom().item(Either.left(new UsecaseError.BusinessError("Failed to retrieve contacts cause by : " + error.message()))), 
+                    success -> Uni.createFrom().item(Either.right(success))
+                ));
     }
 
     @Override
     public Uni<Either<UsecaseError, List<Contact>>> getAllContactsByContactType(UUID contactTypeId, UUID userId) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getAllContactsByContactType'");
+        
+        return contactService.getAllContactsByContactType(contactTypeId, userId)
+                .chain(result -> result.fold(
+                    error -> Uni.createFrom().item(Either.left(new UsecaseError.BusinessError("Failed to retrieve contacts by contact type cause by : " + error.message()))), 
+                    success -> Uni.createFrom().item(Either.right(success))
+                ));
     }
     
 }

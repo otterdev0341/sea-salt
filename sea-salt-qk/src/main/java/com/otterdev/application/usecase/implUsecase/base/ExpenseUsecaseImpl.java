@@ -10,7 +10,6 @@ import com.otterdev.domain.valueObject.dto.expense.ReqUpdateExpenseDto;
 import com.otterdev.error_structure.UsecaseError;
 import com.otterdev.infrastructure.service.internal.base.InternalExpenseService;
 import com.spencerwi.either.Either;
-
 import io.smallrye.mutiny.Uni;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
@@ -28,39 +27,69 @@ class ExpenseUsecaseImpl implements InternalExpenseUsecase{
 
     @Override
     public Uni<Either<UsecaseError, Expense>> createExpense(ReqCreateExpenseDto reqCreateExpenseDto, UUID userId) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'createExpense'");
+        
+        return expenseService.createExpense(reqCreateExpenseDto, userId)
+                .chain(result -> result.fold(
+                    error -> Uni.createFrom().item(Either.left(new UsecaseError.BusinessError("Failed to create expense cause by : " + error.message()))), 
+                    success -> Uni.createFrom().item(Either.right(result.getRight()))
+                ));
+
     }
 
     @Override
     public Uni<Either<UsecaseError, Expense>> updateExpense(UUID expenseId, ReqUpdateExpenseDto reqUpdateExpenseDto,
             UUID userId) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'updateExpense'");
+        
+        return expenseService.updateExpense(expenseId, reqUpdateExpenseDto, userId)
+            .chain(result -> result.fold(
+                error -> Uni.createFrom().item(Either.left(new UsecaseError.BusinessError("Failed to update expense cause by : " + error.message()))), 
+                success -> Uni.createFrom().item(Either.right(result.getRight()))
+            ));
+
     }
 
     @Override
     public Uni<Either<UsecaseError, Boolean>> deleteExpense(UUID expenseId, UUID userId) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'deleteExpense'");
+        
+        return expenseService.deleteExpense(expenseId, userId)
+                .chain(result -> result.fold(
+                    error -> Uni.createFrom().item(Either.left(new UsecaseError.BusinessError("Failed to delete expense cause by : " + error.message()))), 
+                    success -> Uni.createFrom().item(Either.right(success))
+                ));
+
     }
 
     @Override
     public Uni<Either<UsecaseError, Expense>> getExpense(UUID expenseId, UUID userId) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getExpense'");
+        
+        return expenseService.getExpense(expenseId, userId)
+                .chain(result -> result.fold(
+                    error -> Uni.createFrom().item(Either.left(new UsecaseError.BusinessError("Failed to retrieve expense cause by : " + error.message()))), 
+                    success -> Uni.createFrom().item(Either.right(success))
+                ));
+
     }
 
     @Override
     public Uni<Either<UsecaseError, List<Expense>>> getAllExpenses(UUID userId) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getAllExpenses'");
+    
+        return expenseService.getAllExpenses(userId)
+                .chain(result -> result.fold(
+                    error -> Uni.createFrom().item(Either.left(new UsecaseError.BusinessError("Failed to retrieve expenses cause by : " + error.message()))), 
+                    success -> Uni.createFrom().item(Either.right(success))
+                ));
+
     }
 
     @Override
     public Uni<Either<UsecaseError, List<Expense>>> getAllExpenseByExpenseType(UUID userId, UUID expenseTypeId) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getAllExpenseByExpenseType'");
+        
+        return expenseService.getAllExpenseByExpenseType(userId, expenseTypeId)
+                .chain(result -> result.fold(
+                    error -> Uni.createFrom().item(Either.left(new UsecaseError.BusinessError("Failed to retrieve expenses by type cause by : " + error.message()))), 
+                    success -> Uni.createFrom().item(Either.right(success))
+                ));
+
     }
     
 }

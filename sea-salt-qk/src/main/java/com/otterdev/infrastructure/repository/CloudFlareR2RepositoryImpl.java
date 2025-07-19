@@ -27,7 +27,7 @@ import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 import software.amazon.awssdk.services.s3.model.S3Exception;
 
 @ApplicationScoped
-class CloudFlareR2RepositoryImpl implements CloudFlareR2Repository {
+public class CloudFlareR2RepositoryImpl implements CloudFlareR2Repository {
 
     private final S3Client s3Client;
     private final String bucketName;
@@ -46,7 +46,7 @@ class CloudFlareR2RepositoryImpl implements CloudFlareR2Repository {
         
         this.s3Client = S3Client.builder()
             .endpointOverride(java.net.URI.create(endpoint))
-            .region(Region.US_EAST_1)
+            .region(Region.of("auto"))
             .credentialsProvider(StaticCredentialsProvider.create(
                 AwsBasicCredentials.create(accessKeyId, secretAccessKey)
             ))
@@ -62,7 +62,7 @@ class CloudFlareR2RepositoryImpl implements CloudFlareR2Repository {
 
                 uploadToR2(tempFile, uniqueFileName, file.contentType());
                 Files.delete(tempFile);
-
+                System.out.println("Temp file path: " + tempFile);
                 return Either.right(createFileResponse(uniqueFileName, file));
             } catch (Exception e) {
                 return Either.left(new RepositoryError.PersistenceFailed(
@@ -145,6 +145,7 @@ class CloudFlareR2RepositoryImpl implements CloudFlareR2Repository {
     private ResFileR2Dto createFileResponse(String fileName, FileUpload originalFile) {
         ResFileR2Dto response = new ResFileR2Dto();
         response.setFileName(fileName);
+        response.setObjectKey(fileName);
         response.setContentType(originalFile.contentType());
         response.setContentLength(originalFile.size());
         response.setFileUrl(publicUrlBase + "/" + fileName);

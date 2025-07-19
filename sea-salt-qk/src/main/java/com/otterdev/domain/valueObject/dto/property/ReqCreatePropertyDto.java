@@ -3,10 +3,13 @@ package com.otterdev.domain.valueObject.dto.property;
 import java.util.List;
 import java.util.UUID;
 
+import org.jboss.resteasy.reactive.PartType;
+import org.jboss.resteasy.reactive.RestForm;
 import org.jboss.resteasy.reactive.multipart.FileUpload;
 
 import jakarta.validation.constraints.NotBlank;
-import jakarta.ws.rs.FormParam;
+import jakarta.validation.constraints.NotNull;
+import jakarta.ws.rs.core.MediaType;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -16,46 +19,81 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class ReqCreatePropertyDto {
     
-    @FormParam("name")
+    @RestForm("name")
+    @PartType(MediaType.TEXT_PLAIN)
     @NotBlank(message = "Property name cannot be blank")
     private String name;
 
-    @FormParam("description")
+    @RestForm("description")
+    @PartType(MediaType.TEXT_PLAIN)
     private String description;
 
-    @FormParam("specific")
+    @RestForm("specific")
+    @PartType(MediaType.TEXT_PLAIN)
     private String specific;
 
-    @FormParam("highlight")
+    @RestForm("highlight")
+    @PartType(MediaType.TEXT_PLAIN)
     private String hilight;
 
-    @FormParam("area")
+    @RestForm("area")
+    @PartType(MediaType.TEXT_PLAIN)
     private String area;
 
-    @FormParam("price")
-    private Double price; 
+    @RestForm("price")
+    @PartType(MediaType.TEXT_PLAIN)
+    private String price; 
 
-    @FormParam("fsp")
-    private Double fsp;
+    @RestForm("fsp")
+    @PartType(MediaType.TEXT_PLAIN)
+    private String fsp;
 
-    @FormParam("propertyType")
-    private UUID status;
+    @RestForm("status")
+    @PartType(MediaType.TEXT_PLAIN)
+    private String status;
 
-    @FormParam("ownerBy")
-    @NotBlank(message = "Owner by is required")
-    private UUID ownerBy;
+    @RestForm("ownerBy")
+    @PartType(MediaType.TEXT_PLAIN)
+    @NotNull(message = "Owner by is required")
+    private String ownerBy;
 
-    @FormParam("mapUrl")
+    @RestForm("mapUrl")
+    @PartType(MediaType.TEXT_PLAIN)
     private String mapUrl;
 
-    @FormParam("lat")
+    @RestForm("lat")
+    @PartType(MediaType.TEXT_PLAIN)
     private String lat;
 
-    @FormParam("lng")
+    @RestForm("lng")
+    @PartType(MediaType.TEXT_PLAIN)
     private String lng;
 
-    @FormParam("files")
+    @RestForm("files")
+    @PartType(MediaType.APPLICATION_OCTET_STREAM)
     private List<FileUpload> files;
     
+    public UUID getOwnerByAsUUID() {
+        return UUID.fromString(this.getOwnerBy());
+    }
 
+    public UUID getPropertyStatusAsUUID() {
+        return UUID.fromString(this.getStatus());
+    }
+
+    public Double getPriceAsDouble() {
+        try {
+            return Double.parseDouble(this.getPrice());
+        } catch (NumberFormatException e) {
+            throw new IllegalArgumentException("Invalid price format: " + this.getPrice());
+        }
+    }
+
+    public Double getFspAsDouble() {
+        try {
+            return Double.parseDouble(this.getFsp());
+        } catch (NumberFormatException e) {
+            throw new IllegalArgumentException("Invalid FSP format: " + this.getFsp());
+        }
+    }
 }

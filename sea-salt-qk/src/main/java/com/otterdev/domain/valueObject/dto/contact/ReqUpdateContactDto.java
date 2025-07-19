@@ -3,6 +3,7 @@ package com.otterdev.domain.valueObject.dto.contact;
 import java.util.UUID;
 
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -21,7 +22,7 @@ public class ReqUpdateContactDto {
 
     private String note;
 
-    @NotBlank(message = "Contact type cannot be blank")
+    @NotNull(message = "Contact type cannot be blank")
     private UUID contactType;
 
     private String address;

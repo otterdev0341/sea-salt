@@ -27,8 +27,13 @@ class PropertyUsecaseImpl implements InternalPropertyUsecase {
 
     @Override
     public Uni<Either<UsecaseError, Property>> createProperty(ReqCreatePropertyDto reqCreatePropertyDto, UUID userId) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'createProperty'");
+        
+        return propertyService.createProperty(reqCreatePropertyDto, userId)
+            .chain(result -> result.fold(
+                error -> Uni.createFrom().item(Either.left(new UsecaseError.BusinessError("Failed to create property cause by : " + error.message()))), 
+                success -> Uni.createFrom().item(Either.right(success))
+            ));
+
     }
 
     @Override
