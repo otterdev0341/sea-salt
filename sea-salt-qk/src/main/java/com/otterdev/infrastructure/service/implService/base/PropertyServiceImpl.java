@@ -12,6 +12,7 @@ import com.otterdev.domain.entity.Property;
 import com.otterdev.domain.entity.relation.PropertyFileDetail;
 import com.otterdev.domain.valueObject.cloudflare.ResFileR2Dto;
 import com.otterdev.domain.valueObject.dto.property.ReqCreatePropertyDto;
+import com.otterdev.domain.valueObject.dto.property.ReqUpdatePropertyDto;
 import com.otterdev.error_structure.ServiceError;
 import com.otterdev.infrastructure.repository.CloudFlareR2RepositoryImpl;
 import com.otterdev.infrastructure.repository.ContactRepository;
@@ -20,8 +21,8 @@ import com.otterdev.infrastructure.repository.FileTypeRepository;
 import com.otterdev.infrastructure.repository.PropertyFileDetailRepository;
 import com.otterdev.infrastructure.repository.PropertyRepository;
 import com.otterdev.infrastructure.repository.PropertyStatusRepository;
-import com.otterdev.infrastructure.repository.PropertyTypeRepository;
 import com.otterdev.infrastructure.repository.UserRepository;
+import com.otterdev.infrastructure.repository.support.InternalFileRelateRepository;
 import com.otterdev.infrastructure.service.internal.base.InternalPropertyService;
 import com.spencerwi.either.Either;
 
@@ -46,9 +47,22 @@ class PropertyServiceImpl implements InternalPropertyService {
     private final PropertyFileDetailRepository propertyFileDetailRepository;
     private final FileDetailRepository fileDetailRepository;
     private final FileTypeRepository fileTypeRepository;
+    private final InternalFileRelateRepository propertyFileDetailRelatedRepository;
+
 
     @Inject
-    public PropertyServiceImpl(PropertyRepository propertyRepository, UserRepository userRepository, CloudFlareR2RepositoryImpl cloudFlareR2Repository, PropertyStatusRepository propertyStatusRepository, ContactRepository contactRepository, PropertyFileDetailRepository propertyFileDetailRepository, FileDetailRepository fileDetailRepository, FileTypeRepository fileTypeRepository) {
+    public PropertyServiceImpl(
+        PropertyRepository propertyRepository, 
+        UserRepository userRepository, 
+        CloudFlareR2RepositoryImpl cloudFlareR2Repository, 
+        PropertyStatusRepository propertyStatusRepository, 
+        ContactRepository contactRepository, 
+        PropertyFileDetailRepository propertyFileDetailRepository, 
+        FileDetailRepository fileDetailRepository, 
+        FileTypeRepository fileTypeRepository, 
+        @Named("propertyFileDetailRepository") InternalFileRelateRepository propertyFileDetailRelatedRepository
+        ) 
+    {
         this.propertyRepository = propertyRepository;
         this.userRepository = userRepository;
         this.cloudFlareR2Repository = cloudFlareR2Repository;
@@ -57,8 +71,10 @@ class PropertyServiceImpl implements InternalPropertyService {
         this.propertyFileDetailRepository = propertyFileDetailRepository;
         this.fileDetailRepository = fileDetailRepository;
         this.fileTypeRepository = fileTypeRepository;
+        this.propertyFileDetailRelatedRepository = propertyFileDetailRelatedRepository;
     }
-   
+
+
     
     
     
@@ -102,54 +118,207 @@ class PropertyServiceImpl implements InternalPropertyService {
 
     @Override
     @WithTransaction
-    public Uni<Either<ServiceError, Property>> updateProperty(ReqCreatePropertyDto reqCreatePropertyDto,
+    public Uni<Either<ServiceError, Property>> updateProperty(ReqUpdatePropertyDto reqUpdatePropertyDto,
             UUID propertyId, UUID userId) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'updateProperty'");
+        // get user object
+        // is new property name is not exist
+        // is property status exist
+        // is contact exist
+        // is property exist
+        // persist update
+        LocalDateTime now = LocalDateTime.now();
+        return userRepository.findByUserId(userId)
+        .chain(userOpt -> {
+            if (userOpt.isEmpty()) {
+                return Uni.createFrom().item(Either.left(new ServiceError.NotFound("User not found")));
+            }
+            return propertyRepository.isExistByNameAndUserId(reqUpdatePropertyDto.getName(), userOpt.get().getId())
+            .chain(isNameExist -> {
+                if (isNameExist) {
+                    return Uni.createFrom().item(Either.left(new ServiceError.BusinessRuleFailed("Property name already exists")));
+                }
+                return propertyStatusRepository.findByIdAndUserId(reqUpdatePropertyDto.getStatus(), userOpt.get().getId())
+                .chain(propertyStatusOpt -> {
+                    if (propertyStatusOpt.isEmpty()) {
+                        return Uni.createFrom().item(Either.left(new ServiceError.NotFound("Property status not found")));
+                    }
+                    return contactRepository.findByIdAndUserId(reqUpdatePropertyDto.getOwnerBy(), userOpt.get().getId())
+                    .chain(contactOpt -> {
+                        if (contactOpt.isEmpty()) {
+                            return Uni.createFrom().item(Either.left(new ServiceError.NotFound("Contact not found")));
+                        }
+                        return propertyRepository.findByIdAndUserId(propertyId, userOpt.get().getId())
+                        .chain(propertyOpt -> {
+                            if (propertyOpt.isEmpty()) {
+                                return Uni.createFrom().item(Either.left(new ServiceError.NotFound("Property not found")));
+                            }
+                            Property existingProperty = propertyOpt.get();
+                            existingProperty.setName(reqUpdatePropertyDto.getName().trim());
+                            existingProperty.setDescription(reqUpdatePropertyDto.getDescription());
+                            existingProperty.setSpecific(reqUpdatePropertyDto.getSpecific());
+                            existingProperty.setHilight(reqUpdatePropertyDto.getHilight());
+                            existingProperty.setArea(reqUpdatePropertyDto.getArea());
+                            existingProperty.setPrice(new BigDecimal(reqUpdatePropertyDto.getPrice()));
+                            existingProperty.setFsp(new BigDecimal(reqUpdatePropertyDto.getFsp()));
+                            existingProperty.setStatus(propertyStatusOpt.get());
+                            existingProperty.setOwnerBy(contactOpt.get());
+                            existingProperty.setMapUrl(reqUpdatePropertyDto.getMapUrl());
+                            existingProperty.setLat(reqUpdatePropertyDto.getLat());
+                            existingProperty.setLng(reqUpdatePropertyDto.getLng());
+                            existingProperty.setUpdatedAt(now);
+
+                            return propertyRepository.updateProperty(existingProperty, userId)
+                            .chain(updatePropertyResult -> updatePropertyResult.fold(
+                                error -> Uni.createFrom().item(Either.left(new ServiceError.OperationFailed("Failed to update property: " + error.message()))), 
+                                updatedProperty -> propertyRepository.findByIdAndUserId(updatedProperty.getId(), userId)
+                                .map(finalPropertyOpt -> finalPropertyOpt.isPresent()
+                                ? Either.right(finalPropertyOpt.get())
+                                : Either.left(new ServiceError.NotFound("Updated property not found after update operation"))
+                                )
+                                )//end map
+                            ); // enc chain
+                        }); // end property check
+                    }); // end contact check
+                }); // end property status check
+            }); // end name exist check
+        }); // end user
     }
 
     @Override
     @WithSession
     public Uni<Either<ServiceError, Property>> getPropertyById(UUID propertyId, UUID userId) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getPropertyById'");
+        
+        return propertyRepository.findByIdAndUserId(propertyId, userId)
+                .chain(result -> {
+                    if (result.isEmpty()) {
+                        return Uni.createFrom().item(Either.left(new ServiceError.NotFound("Property not found")));
+                    }
+                    return Uni.createFrom().item(Either.right(result.get()));
+                });
+
     }
 
     @Override
     @WithTransaction
     public Uni<Either<ServiceError, Boolean>> deleteProperty(UUID propertyId, UUID userId) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'deleteProperty'");
+        
+        return propertyRepository.deleteProperty(propertyId, userId)
+            .chain(result -> result.fold(
+                error -> Uni.createFrom().item(Either.left(new ServiceError.OperationFailed("Failed to delete property: " + error.message()))),
+                success -> Uni.createFrom().item(Either.right(success))
+            ));
+
     }
 
     @Override
     @WithSession
-    public Uni<Either<ServiceError, List<Property>>> getAllProperties(String slug, UUID userId) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getAllProperties'");
+    public Uni<Either<ServiceError, List<Property>>> getAllProperties(UUID userId) {
+        
+        return propertyRepository.findAllByUserId(userId)
+            .chain(result -> result.fold(
+                error -> Uni.createFrom().item(Either.left(new ServiceError.OperationFailed("Failed to retrieve properties: " + error.message()))),
+                properties -> Uni.createFrom().item(Either.right(properties))
+            ));
+
     }
 
     @Override
     @WithSession
     public Uni<Either<ServiceError, List<Property>>> getPropertiesByType(UUID propertyTypeId, UUID userId) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getPropertiesByType'");
+        
+        return propertyRepository.findAllPropertiesByStatusAndUserId(propertyTypeId, userId)
+            .chain(result -> result.fold(
+                error -> Uni.createFrom().item(Either.left(new ServiceError.OperationFailed("Failed to retrieve properties by type: " + error.message()))),
+                properties -> Uni.createFrom().item(Either.right(properties))
+            ));
     }
 
     @Override
     @WithSession
     public Uni<Either<ServiceError, List<Property>>> getPropertiesByStatus(UUID statusId, UUID userId) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getPropertiesByStatus'");
+        
+        return propertyRepository.findAllPropertiesByStatusAndUserId(statusId, userId)
+            .chain(result -> result.fold(
+                error -> Uni.createFrom().item(Either.left(new ServiceError.OperationFailed("Failed to retrieve properties by status: " + error.message()))),
+                properties -> Uni.createFrom().item(Either.right(properties))
+            ));
+
     }
 
     @Override
     @WithSession
     public Uni<Either<ServiceError, List<Property>>> getPropertiesBySold(Boolean isSold, UUID userId) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getPropertiesBySold'");
+        
+        return propertyRepository.getAllPropertiesBySold(isSold, userId)
+            .chain(result -> result.fold(
+                error -> Uni.createFrom().item(Either.left(new ServiceError.OperationFailed("Failed to retrieve properties by sold status: " + error.message()))),
+                properties -> Uni.createFrom().item(Either.right(properties))
+            ));
+        
     }
     
+
+    @Override
+    @WithSession
+    public Uni<Either<ServiceError, List<FileDetail>>> getAllImagesRelatedById(UUID targetId, UUID userId) {
+        // check user
+        // get file type
+        // get all properties by sold status
+        // return properties
+        return userRepository.findByUserId(userId)
+        .chain(userOpt -> {
+            if (userOpt.isEmpty()) {
+                return Uni.createFrom().item(Either.left(new ServiceError.NotFound("User not found")));
+            }
+            return fileTypeRepository.getFileTypeByExtention("image")
+            .chain(fileType -> {
+                if (fileType == null) {
+                    return Uni.createFrom().item(Either.left(new ServiceError.NotFound("File type not found for 'image'")));
+                }
+                return propertyFileDetailRelatedRepository.getAllFilesRelatedById(targetId, userOpt.get().getId(), fileType)
+                    .chain(result -> result.fold(
+                        error -> Uni.createFrom().item(Either.left(new ServiceError.OperationFailed("Failed to retrieve image files: " + error.message()))),
+                        fileDetails -> Uni.createFrom().item(Either.right(fileDetails))
+                    ));
+            });// end file type check
+        }); // end user check
+    }
+
+
+
+
+
+
+    @Override
+    public Uni<Either<ServiceError, List<FileDetail>>> getAllPdfRelatedById(UUID targetId, UUID userId) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'getAllPdfRelatedById'");
+    }
+
+
+
+
+
+
+    @Override
+    public Uni<Either<ServiceError, List<FileDetail>>> getAllOtherFileRelatedById(UUID targetId, UUID userId) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'getAllOtherFileRelatedById'");
+    }
+
+
+
+
+
+
+    @Override
+    public Uni<Either<ServiceError, List<FileDetail>>> getAllFilesRelatedById(UUID targetId, UUID userId) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'getAllFilesRelatedById'");
+    }
+
+
+
     // helper method
     @WithTransaction
     public Uni<Either<ServiceError, Property>> helperCreateNewProperty(ReqCreatePropertyDto reqCreatePropertyDto, UUID userId) {
@@ -265,4 +434,10 @@ class PropertyServiceImpl implements InternalPropertyService {
                     .replaceWith(Either.right(true));
             });
     } // end
+
+
+
+
+
+
 }

@@ -23,7 +23,7 @@ public class FileTypeRepository implements PanacheRepository<FileType> {
         String ext = extention.toLowerCase().trim();
         
         // Image file types
-        if (ext.matches("^(jpg|jpeg|png|gif|svg|webp)$")) {
+        if (ext.matches("^(jpg|jpeg|png|gif|svg|webp|image)$")) {
             return getImageFileType();
         }
         
