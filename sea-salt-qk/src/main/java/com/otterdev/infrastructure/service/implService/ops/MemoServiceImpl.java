@@ -7,14 +7,12 @@ import java.util.UUID;
 import org.jboss.resteasy.reactive.multipart.FileUpload;
 
 import com.otterdev.domain.entity.FileDetail;
-import com.otterdev.domain.entity.FileType;
 import com.otterdev.domain.entity.Memo;
 import com.otterdev.domain.entity.relation.MemoFileDetail;
 import com.otterdev.domain.entity.User;
 import com.otterdev.domain.valueObject.dto.file.RequestAttachFile;
 import com.otterdev.domain.valueObject.dto.memo.ReqCreateMemoDto;
 import com.otterdev.domain.valueObject.dto.memo.ReqUpdateMemoDto;
-import com.otterdev.error_structure.RepositoryError;
 import com.otterdev.error_structure.ServiceError;
 import com.otterdev.infrastructure.repository.FileDetailRepository;
 import com.otterdev.infrastructure.repository.FileTypeRepository;
@@ -26,13 +24,11 @@ import com.otterdev.infrastructure.repository.internal.CloudFlareR2Repository;
 import com.otterdev.infrastructure.service.internal.ops.InternalMemoService;
 import com.otterdev.infrastructure.service.internal.support.InternalFileRelateService;
 import com.spencerwi.either.Either;
-
-import io.quarkus.hibernate.reactive.panache.common.WithSession;
 import io.quarkus.hibernate.reactive.panache.common.WithTransaction;
 import io.smallrye.mutiny.Uni;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
-import jakarta.transaction.Transactional;
+
 
 @ApplicationScoped
 class MemoServiceImpl implements InternalMemoService, InternalFileRelateService {
@@ -155,7 +151,7 @@ class MemoServiceImpl implements InternalMemoService, InternalFileRelateService 
                     return fileTypeRepository.getFileTypeByExtention(file.contentType())
                         .chain(fileType -> {
                             
-                            fileDetail.setType(fileType);
+                            fileDetail.setType(fileType.getRight());
                             return fileDetailRepository.persist(fileDetail)
                                 .chain(persistedFileDetail -> {
                                     // Create MemoFileDetail relation

@@ -8,9 +8,11 @@ import java.util.UUID;
 import org.jboss.resteasy.reactive.multipart.FileUpload;
 
 import com.otterdev.domain.entity.FileDetail;
+import com.otterdev.domain.entity.FileType;
 import com.otterdev.domain.entity.Property;
 import com.otterdev.domain.entity.relation.PropertyFileDetail;
 import com.otterdev.domain.valueObject.cloudflare.ResFileR2Dto;
+import com.otterdev.domain.valueObject.dto.file.RequestAttachFile;
 import com.otterdev.domain.valueObject.dto.property.ReqCreatePropertyDto;
 import com.otterdev.domain.valueObject.dto.property.ReqUpdatePropertyDto;
 import com.otterdev.error_structure.ServiceError;
@@ -261,27 +263,25 @@ class PropertyServiceImpl implements InternalPropertyService {
     @Override
     @WithSession
     public Uni<Either<ServiceError, List<FileDetail>>> getAllImagesRelatedById(UUID targetId, UUID userId) {
-        // check user
-        // get file type
-        // get all properties by sold status
-        // return properties
         return userRepository.findByUserId(userId)
-        .chain(userOpt -> {
-            if (userOpt.isEmpty()) {
-                return Uni.createFrom().item(Either.left(new ServiceError.NotFound("User not found")));
-            }
-            return fileTypeRepository.getFileTypeByExtention("image")
-            .chain(fileType -> {
-                if (fileType == null) {
-                    return Uni.createFrom().item(Either.left(new ServiceError.NotFound("File type not found for 'image'")));
+            .chain(userOpt -> {
+                if (userOpt.isEmpty()) {
+                    return Uni.createFrom().item(Either.left(new ServiceError.NotFound("User not found")));
                 }
-                return propertyFileDetailRelatedRepository.getAllFilesRelatedById(targetId, userOpt.get().getId(), fileType)
-                    .chain(result -> result.fold(
-                        error -> Uni.createFrom().item(Either.left(new ServiceError.OperationFailed("Failed to retrieve image files: " + error.message()))),
-                        fileDetails -> Uni.createFrom().item(Either.right(fileDetails))
-                    ));
-            });// end file type check
-        }); // end user check
+                // getFileTypeByExtention อาจคืน Uni<Either<ServiceError, FileType>>
+                return fileTypeRepository.getFileTypeByExtention("image")
+                    .chain(fileTypeResult -> {
+                        if (fileTypeResult.isLeft()) {
+                            return Uni.createFrom().item(Either.left(new ServiceError.NotFound("File type not found for content type: image")));
+                        }
+                        FileType fileType = fileTypeResult.getRight();
+                        return propertyFileDetailRelatedRepository.getAllFileRelatedById(targetId, userOpt.get().getId(), fileType)
+                            .chain(fileDetailsResult -> fileDetailsResult.fold(
+                                error -> Uni.createFrom().item(Either.left(new ServiceError.OperationFailed("Failed to retrieve image files: " + error.message()))),
+                                fileDetails -> Uni.createFrom().item(Either.right(fileDetails))
+                            ));
+                    });
+            });
     }
 
 
@@ -290,9 +290,27 @@ class PropertyServiceImpl implements InternalPropertyService {
 
 
     @Override
+    @WithSession
     public Uni<Either<ServiceError, List<FileDetail>>> getAllPdfRelatedById(UUID targetId, UUID userId) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getAllPdfRelatedById'");
+        return userRepository.findByUserId(userId)
+            .chain(userOpt -> {
+                if (userOpt.isEmpty()) {
+                    return Uni.createFrom().item(Either.left(new ServiceError.NotFound("User not found")));
+                }
+                // getFileTypeByExtention อาจคืน Uni<Either<ServiceError, FileType>>
+                return fileTypeRepository.getFileTypeByExtention("pdf")
+                    .chain(fileTypeResult -> {
+                        if (fileTypeResult.isLeft()) {
+                            return Uni.createFrom().item(Either.left(new ServiceError.NotFound("File type not found for content type: image")));
+                        }
+                        FileType fileType = fileTypeResult.getRight();
+                        return propertyFileDetailRelatedRepository.getAllFileRelatedById(targetId, userOpt.get().getId(), fileType)
+                            .chain(fileDetailsResult -> fileDetailsResult.fold(
+                                error -> Uni.createFrom().item(Either.left(new ServiceError.OperationFailed("Failed to retrieve image files: " + error.message()))),
+                                fileDetails -> Uni.createFrom().item(Either.right(fileDetails))
+                            ));
+                    });
+            });
     }
 
 
@@ -301,9 +319,27 @@ class PropertyServiceImpl implements InternalPropertyService {
 
 
     @Override
+    @WithSession
     public Uni<Either<ServiceError, List<FileDetail>>> getAllOtherFileRelatedById(UUID targetId, UUID userId) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getAllOtherFileRelatedById'");
+        return userRepository.findByUserId(userId)
+            .chain(userOpt -> {
+                if (userOpt.isEmpty()) {
+                    return Uni.createFrom().item(Either.left(new ServiceError.NotFound("User not found")));
+                }
+                // getFileTypeByExtention อาจคืน Uni<Either<ServiceError, FileType>>
+                return fileTypeRepository.getFileTypeByExtention("other")
+                    .chain(fileTypeResult -> {
+                        if (fileTypeResult.isLeft()) {
+                            return Uni.createFrom().item(Either.left(new ServiceError.NotFound("File type not found for content type: image")));
+                        }
+                        FileType fileType = fileTypeResult.getRight();
+                        return propertyFileDetailRelatedRepository.getAllFileRelatedById(targetId, userOpt.get().getId(), fileType)
+                            .chain(fileDetailsResult -> fileDetailsResult.fold(
+                                error -> Uni.createFrom().item(Either.left(new ServiceError.OperationFailed("Failed to retrieve image files: " + error.message()))),
+                                fileDetails -> Uni.createFrom().item(Either.right(fileDetails))
+                            ));
+                    });
+            });
     }
 
 
@@ -312,9 +348,20 @@ class PropertyServiceImpl implements InternalPropertyService {
 
 
     @Override
+    @WithSession
     public Uni<Either<ServiceError, List<FileDetail>>> getAllFilesRelatedById(UUID targetId, UUID userId) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getAllFilesRelatedById'");
+        return userRepository.findByUserId(userId)
+            .chain(userOpt -> {
+                if (userOpt.isEmpty()) {
+                    return Uni.createFrom().item(Either.left(new ServiceError.NotFound("User not found")));
+                }
+                // getFileTypeByExtention อาจคืน Uni<Either<ServiceError, FileType>>
+                return propertyFileDetailRelatedRepository.getAllFilesRelatedById(targetId, userOpt.get().getId())
+                            .chain(fileDetailsResult -> fileDetailsResult.fold(
+                                error -> Uni.createFrom().item(Either.left(new ServiceError.OperationFailed("Failed to retrieve image files: " + error.message()))),
+                                fileDetails -> Uni.createFrom().item(Either.right(fileDetails))
+                            ));
+            });
     }
 
 
@@ -381,7 +428,7 @@ class PropertyServiceImpl implements InternalPropertyService {
 
         return fileTypeRepository.getFileTypeByExtention(file.contentType())
             .chain(fileType -> {
-                if (fileType == null) {
+                if (fileType.isLeft()) {
                     return Uni.createFrom().item(Either.left(new ServiceError.NotFound("File type not found for content type: " + file.contentType())));
                 }
                 return userRepository.findByUserId(userId)
@@ -399,7 +446,7 @@ class PropertyServiceImpl implements InternalPropertyService {
                         newFileDetail.setName(uploadedFileDto.getFileName());
                         newFileDetail.setObjectKey(uploadedFileDto.getObjectKey());
                         newFileDetail.setPath(uploadedFileDto.getFileUrl());
-                        newFileDetail.setType(fileType);
+                        newFileDetail.setType(fileType.getRight());
                         newFileDetail.setSize(uploadedFileDto.getContentLength());
                         newFileDetail.setCreatedBy(userOpt.get());
                         newFileDetail.setCreatedAt(LocalDateTime.now());
@@ -434,6 +481,31 @@ class PropertyServiceImpl implements InternalPropertyService {
                     .replaceWith(Either.right(true));
             });
     } // end
+
+
+
+
+
+
+
+    @Override
+    public Uni<Either<ServiceError, Boolean>> attachFileToTarget(UUID targetId, RequestAttachFile requestAttachFile,
+            UUID userId) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'attachFileToTarget'");
+    }
+
+
+
+
+
+
+
+    @Override
+    public Uni<Either<ServiceError, Boolean>> removeFileFromTarget(UUID taretId, UUID fileId, UUID userId) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'removeFileFromTarget'");
+    }
 
 
 

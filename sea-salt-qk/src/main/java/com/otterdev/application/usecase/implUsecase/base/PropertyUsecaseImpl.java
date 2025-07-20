@@ -6,6 +6,7 @@ import java.util.UUID;
 import com.otterdev.application.usecase.internal.base.InternalPropertyUsecase;
 import com.otterdev.domain.entity.FileDetail;
 import com.otterdev.domain.entity.Property;
+import com.otterdev.domain.valueObject.dto.file.RequestAttachFile;
 import com.otterdev.domain.valueObject.dto.property.ReqCreatePropertyDto;
 import com.otterdev.domain.valueObject.dto.property.ReqUpdatePropertyDto;
 import com.otterdev.error_structure.UsecaseError;
@@ -158,6 +159,19 @@ class PropertyUsecaseImpl implements InternalPropertyUsecase {
                     success -> Uni.createFrom().item(Either.right(success))
                 ));
 
+    }
+
+    @Override
+    public Uni<Either<UsecaseError, Boolean>> attachFileToTarget(UUID targetId, RequestAttachFile requestAttachFile,
+            UUID userId) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'attachFileToTarget'");
+    }
+
+    @Override
+    public Uni<Either<UsecaseError, Boolean>> removeFileFromTarget(UUID taretId, UUID fileId, UUID userId) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'removeFileFromTarget'");
     }
 
 

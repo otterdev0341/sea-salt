@@ -3,6 +3,8 @@ package com.otterdev.infrastructure.repository;
 import java.util.Optional;
 
 import com.otterdev.domain.entity.FileType;
+import com.otterdev.error_structure.RepositoryError;
+import com.spencerwi.either.Either;
 
 import io.quarkus.hibernate.reactive.panache.PanacheRepository;
 import io.smallrye.mutiny.Uni;
@@ -19,40 +21,62 @@ public class FileTypeRepository implements PanacheRepository<FileType> {
             .map(Optional::ofNullable);
     }
 
-    public Uni<FileType> getFileTypeByExtention(String extention) {
+    public Uni<Either<RepositoryError, FileType>> getFileTypeByExtention(String extention) {
         String ext = extention.toLowerCase().trim();
         
         // Image file types
         if (ext.matches("^(jpg|jpeg|png|gif|svg|webp|image)$")) {
-            return getImageFileType();
+            return getImageFileType()
+            .chain(result -> result.fold(
+                error -> Uni.createFrom().item(Either.left(error)),
+                fileType -> Uni.createFrom().item(Either.right(fileType))
+            ));
         }
         
         // PDF files
         if (ext.equals("pdf")) {
-            return getImagePdfType();
+            return getPdfFileType()
+            .chain(result -> result.fold(
+                error -> Uni.createFrom().item(Either.left(error)),
+                fileType -> Uni.createFrom().item(Either.right(fileType))
+            ));
         }
         
         // All other file types
-        return getImageOtherType();
+        return getImageOtherType()
+        .chain(result -> result.fold(
+                error -> Uni.createFrom().item(Either.left(error)),
+                fileType -> Uni.createFrom().item(Either.right(fileType))
+            ));
     }
 
     // -- internal funtions to get specific file types
     // These methods can be modified to suit your application's needs
 
     
-    private Uni<FileType> getImageFileType() {
+    private Uni<Either<RepositoryError, FileType>> getImageFileType() {
+        // return > 0 returns the first result or fails if not found
         return find("detail", "image").firstResult()
-            .onItem().ifNull().failWith(() -> new RuntimeException("Image file type not found"));
+            .onItem().transform(fileType -> Either.<RepositoryError, FileType>right(fileType))
+            .onFailure().recoverWithItem(err ->
+                Either.<RepositoryError, FileType>left(new RepositoryError.FetchFailed("Failed to fetch image file type: " + err.getMessage()))
+            );
     }
 
-    private Uni<FileType> getImagePdfType() {
+    private Uni<Either<RepositoryError,FileType>> getPdfFileType() {
         return find("detail", "pdf").firstResult()
-            .onItem().ifNull().failWith(() -> new RuntimeException("Image file type not found"));
+            .onItem().transform(fileType -> Either.<RepositoryError, FileType>right(fileType))
+            .onFailure().recoverWithItem(err ->
+                Either.<RepositoryError, FileType>left(new RepositoryError.FetchFailed("Failed to fetch pdf file type: " + err.getMessage()))
+            );
     }
 
-    private Uni<FileType> getImageOtherType() {
+    private Uni<Either<RepositoryError, FileType>> getImageOtherType() {
         return find("detail", "other").firstResult()
-            .onItem().ifNull().failWith(() -> new RuntimeException("Image file type not found"));
+            .onItem().transform(fileType -> Either.<RepositoryError, FileType>right(fileType))
+            .onFailure().recoverWithItem(err ->
+                Either.<RepositoryError, FileType>left(new RepositoryError.FetchFailed("Failed to fetch other file type: " + err.getMessage()))
+            );
     }
 
     

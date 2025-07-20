@@ -8,13 +8,14 @@ import com.otterdev.domain.valueObject.dto.property.ReqCreatePropertyDto;
 import com.otterdev.domain.valueObject.dto.property.ReqUpdatePropertyDto;
 import com.otterdev.error_structure.ServiceError;
 import com.otterdev.infrastructure.service.internal.support.InternalFileRelateService;
+import com.otterdev.infrastructure.service.internal.support.InternalHandleSingleFileService;
 import com.spencerwi.either.Either;
 
 import io.smallrye.mutiny.Uni;
 import jakarta.enterprise.context.ApplicationScoped;
 
 @ApplicationScoped
-public interface InternalPropertyService extends InternalFileRelateService {
+public interface InternalPropertyService extends InternalFileRelateService, InternalHandleSingleFileService {
     
     // common case
     Uni<Either<ServiceError, Property>> createProperty(ReqCreatePropertyDto reqCreatePropertyDto, UUID userId);

@@ -10,6 +10,7 @@ import com.otterdev.domain.entity.FileType;
 import com.otterdev.domain.entity.relation.PropertyFileDetail;
 import com.otterdev.error_structure.RepositoryError;
 import com.otterdev.infrastructure.repository.support.InternalFileRelateRepository;
+import com.otterdev.infrastructure.repository.support.InternalHandleSingleFileRepository;
 import com.spencerwi.either.Either;
 
 import io.quarkus.hibernate.reactive.panache.PanacheRepository;
@@ -20,7 +21,7 @@ import jakarta.inject.Named;
 
 @ApplicationScoped
 @Named("propertyFileDetailRepository")
-public class PropertyFileDetailRepository implements PanacheRepository<PropertyFileDetail>, InternalFileRelateRepository {
+public class PropertyFileDetailRepository implements PanacheRepository<PropertyFileDetail>, InternalFileRelateRepository, InternalHandleSingleFileRepository {
 
     @Inject
     Mutiny.SessionFactory sessionFactory;
@@ -94,6 +95,20 @@ public class PropertyFileDetailRepository implements PanacheRepository<PropertyF
                 new RepositoryError.FetchFailed("Failed to fetch files: " + err.getMessage())
             )
         );
+    }
+
+
+    @Override
+    public Uni<Either<RepositoryError, Boolean>> attachFileToTarget(UUID targetId, FileDetail fileDetail) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'attachFileToTarget'");
+    }
+
+
+    @Override
+    public Uni<Either<RepositoryError, Boolean>> removeFileFromTarget(UUID taretId, UUID fileId) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'removeFileFromTarget'");
     }
     
     // This repository can be used to manage FileDetail entities related to properties.

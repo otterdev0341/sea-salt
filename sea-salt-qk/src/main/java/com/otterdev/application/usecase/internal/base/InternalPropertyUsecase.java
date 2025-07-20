@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.UUID;
 
 import com.otterdev.application.usecase.internal.support.InternalFileRelateUsecase;
+import com.otterdev.application.usecase.internal.support.InternalHandleSingleFileUsecase;
 import com.otterdev.domain.entity.Property;
 import com.otterdev.domain.valueObject.dto.property.ReqCreatePropertyDto;
 import com.otterdev.domain.valueObject.dto.property.ReqUpdatePropertyDto;
@@ -14,7 +15,7 @@ import io.smallrye.mutiny.Uni;
 import jakarta.enterprise.context.ApplicationScoped;
 
 @ApplicationScoped
-public interface InternalPropertyUsecase extends InternalFileRelateUsecase {
+public interface InternalPropertyUsecase extends InternalFileRelateUsecase, InternalHandleSingleFileUsecase {
     
     // common case
     Uni<Either<UsecaseError, Property>> createProperty(ReqCreatePropertyDto reqCreatePropertyDto, UUID userId);
